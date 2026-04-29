@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Validación de Perfiles</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+  :root {
+    --bg: #F5F4F0;
+    --surface: #FFFFFF;
+    --border: #E2E0DA;
+    --text: #1A1916;
+    --text-secondary: #6B6860;
+    --accent: #1A6B4A;
+    --accent-light: #EAF4EF;
+    --danger: #C0392B;
+    --danger-light: #FDECEA;
+    --ok: #1A6B4A;
+    --ok-light: #EAF4EF;
+    --radius: 10px;
+    --shadow: 0 1px 4px rgba(0,0,0,0.07);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ── PANTALLAS ── */
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  /* ── UPLOAD SCREEN ── */
+  #screen-upload {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+  .upload-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2.5rem;
+    max-width: 480px;
+    width: 100%;
+    box-shadow: var(--shadow);
+    text-align: center;
+  }
+  .upload-card .logo {
+    width: 48px; height: 48px;
+    background: var(--accent);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 1.5rem;
+    font-size: 22px;
+  }
+  .upload-card h1 { font-size: 20px; font-weight: 600; margin-bottom: 6px; }
+  .upload-card p { font-size: 14px; color: var(--text-secondary); margin-bottom: 1.5rem; line-height: 1.5; }
+  .drop-zone {
+    border: 1.5px dashed var(--border);
+    border-radius: var(--radius);
+    padding: 2rem 1rem;
+    cursor: pointer;
+    transition: all .2s;
+    margin-bottom: 1rem;
+  }
+  .drop-zone:hover { border-color: var(--accent); background: var(--accent-light); }
+  .drop-zone .icon { font-size: 32px; margin-bottom: 8px; }
+  .drop-zone p { font-size: 13px; color: var(--text-secondary); }
+  .drop-zone strong { color: var(--accent); }
+  #fileInput { display: none; }
+  .note { font-size: 12px; color: var(--text-secondary); }
+
+  /* ── FORMULARIO JEFATURA ── */
+  #screen-form { padding: 0; }
+  .form-header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 1.5rem;
+    position: sticky; top: 0; z-index: 10;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 1rem;
+  }
+  .form-header-left h2 { font-size: 15px; font-weight: 600; }
+  .form-header-left p { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+  .progress-wrap { display: flex; align-items: center; gap: 10px; }
+  .progress-bar {
+    width: 120px; height: 6px;
+    background: var(--border);
+    border-radius: 99px; overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%; background: var(--accent);
+    border-radius: 99px; transition: width .3s;
+    width: 0%;
+  }
+  .progress-label { font-size: 12px; color: var(--text-secondary); white-space: nowrap; }
+
+  .form-body { max-width: 720px; margin: 0 auto; padding: 1.5rem; }
+  .instruccion {
+    background: var(--accent-light);
+    border: 1px solid #C3E2D4;
+    border-radius: var(--radius);
+    padding: 12px 16px;
+    font-size: 13px;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+  }
+
+  .user-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 1rem;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  .user-header {
+    padding: 12px 16px;
+    display: flex; align-items: center; gap: 12px;
+    border-bottom: 1px solid var(--border);
+    background: #FAFAF8;
+  }
+  .avatar {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--accent-light);
+    color: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 600; flex-shrink: 0;
+  }
+  .user-name { font-size: 14px; font-weight: 500; }
+  .user-login { font-size: 11px; color: var(--text-secondary); font-family: 'DM Mono', monospace; }
+
+  .perfil-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+    gap: 12px;
+  }
+  .perfil-row:last-child { border-bottom: none; }
+  .perfil-info { flex: 1; min-width: 0; }
+  .perfil-app { font-size: 10px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 2px; }
+  .perfil-name {
+    font-size: 12px; font-family: 'DM Mono', monospace;
+    color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .btns { display: flex; gap: 6px; flex-shrink: 0; }
+  .btn-val {
+    padding: 5px 14px; border-radius: 6px; font-size: 12px; font-weight: 500;
+    border: 1px solid var(--border); background: transparent; cursor: pointer;
+    transition: all .15s; color: var(--text-secondary);
+    font-family: 'DM Sans', sans-serif;
+  }
+  .btn-val:hover { background: var(--bg); }
+  .btn-val.ok {
+    background: var(--ok-light); border-color: #A8D5BC;
+    color: var(--ok);
+  }
+  .btn-val.nok {
+    background: var(--danger-light); border-color: #F0B4AE;
+    color: var(--danger);
+  }
+
+  .form-footer {
+    max-width: 720px; margin: 0 auto;
+    padding: 0 1.5rem 2rem;
+    display: flex; justify-content: flex-end;
+  }
+  .btn-submit {
+    background: var(--accent); color: #fff;
+    border: none; border-radius: var(--radius);
+    padding: 12px 28px; font-size: 14px; font-weight: 500;
+    cursor: pointer; transition: opacity .15s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .btn-submit:hover { opacity: .88; }
+  .btn-submit:disabled { opacity: .4; cursor: not-allowed; }
+
+  /* ── GRACIAS ── */
+  #screen-done {
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    padding: 2rem;
+  }
+  .done-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2.5rem;
+    max-width: 420px; width: 100%;
+    text-align: center;
+    box-shadow: var(--shadow);
+  }
+  .done-icon {
+    width: 56px; height: 56px; border-radius: 50%;
+    background: var(--ok-light); color: var(--ok);
+    font-size: 26px;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 1.25rem;
+  }
+  .done-card h2 { font-size: 20px; font-weight: 600; margin-bottom: 8px; }
+  .done-card p { font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
+
+  /* ── ERROR ── */
+  #screen-error {
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    padding: 2rem;
+  }
+  .error-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 16px; padding: 2rem;
+    max-width: 400px; width: 100%; text-align: center;
+  }
+  .error-card h2 { font-size: 18px; margin-bottom: 8px; }
+  .error-card p { font-size: 13px; color: var(--text-secondary); }
+
+  @media(max-width:500px){
+    .form-header { flex-direction: column; align-items: flex-start; }
+    .perfil-row { flex-direction: column; align-items: flex-start; gap: 8px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- PANTALLA 1: subir excel (solo para admin / testing) -->
+<div id="screen-upload" class="screen active">
+  <div class="upload-card">
+    <div class="logo">📋</div>
+    <h1>Validación de perfiles</h1>
+    <p>Sube el archivo Excel consolidado para cargar el formulario de validación.</p>
+    <div class="drop-zone" onclick="document.getElementById('fileInput').click()">
+      <div class="icon">📂</div>
+      <p><strong>Haz clic para seleccionar</strong> tu archivo Excel</p>
+      <p style="margin-top:4px">Acepta .xlsx, .xls</p>
+    </div>
+    <input type="file" id="fileInput" accept=".xlsx,.xls" onchange="handleFile(event)">
+    <p class="note">El archivo no se sube a ningún servidor — se procesa directo en tu navegador.</p>
+  </div>
+</div>
+
+<!-- PANTALLA 2: formulario jefatura -->
+<div id="screen-form" class="screen">
+  <div class="form-header">
+    <div class="form-header-left">
+      <h2 id="header-nombre">—</h2>
+      <p id="header-correo">—</p>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      <span class="progress-label" id="progressLabel">0 / 0</span>
+    </div>
+  </div>
+  <div class="form-body">
+    <div class="instruccion">
+      Revisa cada perfil asignado a tu equipo y marca <strong>OK</strong> si es correcto, o <strong>Remover</strong> si debe ser eliminado. Debes revisar todos los perfiles antes de enviar.
+    </div>
+    <div id="usuarios-container"></div>
+  </div>
+  <div class="form-footer">
+    <button class="btn-submit" id="btnEnviar" onclick="enviarValidacion()" disabled>Enviar validación</button>
+  </div>
+</div>
+
+<!-- PANTALLA 3: gracias -->
+<div id="screen-done" class="screen">
+  <div class="done-card">
+    <div class="done-icon">✓</div>
+    <h2>¡Validación enviada!</h2>
+    <p>Gracias por revisar los perfiles de tu equipo. El equipo de seguridad procesará tu respuesta a la brevedad.</p>
+  </div>
+</div>
+
+<!-- PANTALLA 4: error (link inválido) -->
+<div id="screen-error" class="screen">
+  <div class="error-card">
+    <h2>Link no válido</h2>
+    <p>Este link no corresponde a ninguna jefatura registrada. Verifica que el link sea el correcto o contacta al administrador.</p>
+  </div>
+</div>
+
+<script>
+// ── COLUMNAS DEL EXCEL ──
+const COL = {
+  app:    'APLICACIONN/CARPETA',
+  perfil: 'PERFIL/PLANTILLA/RUTA',
+  login:  'LOGIN',
+  nombre: 'Nombre',
+  jefatura: 'Jefatura',
+  correo: 'correo jefatura'
+};
+
+let validaciones = {};
+let totalPerfiles = 0;
+let datosGlobales = {}; // { correo: { nombre, usuarios: { login: { nombre, perfiles:[{app,perfil}] } } } }
+
+// ── AL CARGAR: detectar token en URL ──
+window.addEventListener('load', () => {
+  const params = new URLSearchParams(window.location.search);
+  const token = params.get('t');
+  if (token) {
+    // Modo jefatura: necesita el Excel cargado
+    // En producción real aquí se consultaría una API/backend
+    // Por ahora mostramos pantalla de carga de archivo para demo
+    mostrarPantalla('upload');
+    // Guardamos el token para usarlo después de cargar el Excel
+    window.tokenPendiente = token;
+  } else {
+    mostrarPantalla('upload');
+  }
+});
+
+function mostrarPantalla(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + id).classList.add('active');
+}
+
+// ── LEER EXCEL ──
+function handleFile(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const wb = XLSX.read(ev.target.result, { type: 'array' });
+    const ws = wb.Sheets[wb.SheetNames[0]];
+    const rows = XLSX.utils.sheet_to_json(ws);
+    procesarDatos(rows);
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+function procesarDatos(rows) {
+  datosGlobales = {};
+  rows.forEach(r => {
+    const correo = String(r[COL.correo] || '').toLowerCase().trim();
+    if (!correo) return;
+    if (!datosGlobales[correo]) {
+      datosGlobales[correo] = {
+        nombre: r[COL.jefatura] || correo,
+        correo,
+        usuarios: {}
+      };
+    }
+    const login = String(r[COL.login] || '').trim();
+    if (!datosGlobales[correo].usuarios[login]) {
+      datosGlobales[correo].usuarios[login] = {
+        nombre: r[COL.nombre] || login,
+        login,
+        perfiles: []
+      };
+    }
+    datosGlobales[correo].usuarios[login].perfiles.push({
+      app: r[COL.app] || '',
+      perfil: r[COL.perfil] || ''
+    });
+  });
+
+  // Si hay token pendiente, cargar esa jefatura
+  if (window.tokenPendiente) {
+    cargarJefaturaPorToken(window.tokenPendiente);
+  } else {
+    // Sin token: mostrar primera jefatura como demo
+    const primera = Object.keys(datosGlobales)[0];
+    if (primera) cargarJefatura(datosGlobales[primera]);
+  }
+}
+
+function cargarJefaturaPorToken(token) {
+  try {
+    const correo = atob(token + '==').toLowerCase().trim();
+    const jef = datosGlobales[correo];
+    if (!jef) { mostrarPantalla('error'); return; }
+    cargarJefatura(jef);
+  } catch(e) {
+    mostrarPantalla('error');
+  }
+}
+
+function cargarJefatura(jef) {
+  validaciones = {};
+  totalPerfiles = 0;
+  document.getElementById('header-nombre').textContent = jef.nombre;
+  document.getElementById('header-correo').textContent = jef.correo;
+
+  const container = document.getElementById('usuarios-container');
+  container.innerHTML = '';
+
+  Object.values(jef.usuarios).forEach(u => {
+    totalPerfiles += u.perfiles.length;
+    const initials = u.nombre.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
+    const card = document.createElement('div');
+    card.className = 'user-card';
+    card.innerHTML = `
+      <div class="user-header">
+        <div class="avatar">${initials}</div>
+        <div>
+          <div class="user-name">${u.nombre}</div>
+          <div class="user-login">${u.login}</div>
+        </div>
+      </div>
+      ${u.perfiles.map((p, pi) => `
+        <div class="perfil-row" id="row-${u.login}-${pi}">
+          <div class="perfil-info">
+            <div class="perfil-app">${p.app}</div>
+            <div class="perfil-name" title="${p.perfil}">${p.perfil}</div>
+          </div>
+          <div class="btns">
+            <button class="btn-val" onclick="setVal('${u.login}',${pi},'ok',this)">✓ OK</button>
+            <button class="btn-val" onclick="setVal('${u.login}',${pi},'nok',this)">✗ Remover</button>
+          </div>
+        </div>
+      `).join('')}
+    `;
+    container.appendChild(card);
+  });
+
+  actualizarProgreso();
+  mostrarPantalla('form');
+}
+
+function setVal(login, pi, val, btn) {
+  const key = login + '-' + pi;
+  const row = document.getElementById('row-' + login + '-' + pi);
+  const btns = row.querySelectorAll('.btn-val');
+
+  if (validaciones[key] === val) {
+    delete validaciones[key];
+    btns.forEach(b => b.className = 'btn-val');
+  } else {
+    validaciones[key] = val;
+    btns.forEach(b => b.className = 'btn-val');
+    btn.className = 'btn-val ' + val;
+  }
+  actualizarProgreso();
+}
+
+function actualizarProgreso() {
+  const done = Object.keys(validaciones).length;
+  const pct = totalPerfiles > 0 ? Math.round(done / totalPerfiles * 100) : 0;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = done + ' / ' + totalPerfiles;
+  document.getElementById('btnEnviar').disabled = done < totalPerfiles;
+}
+
+function enviarValidacion() {
+  // Aquí en producción se enviaría a un backend/API
+  // Por ahora registramos en consola y mostramos pantalla de éxito
+  console.log('Validación enviada:', validaciones);
+  mostrarPantalla('done');
+}
+</script>
+</body>
+</html>
