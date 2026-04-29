@@ -37,16 +37,21 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .btn-submit{background:var(--green);color:#fff;border:none;border-radius:var(--radius);padding:12px 28px;font-size:14px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif}
 .btn-submit:hover{opacity:.88}
 .btn-submit:disabled{opacity:.4;cursor:not-allowed}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:100;align-items:center;justify-content:center}
+.overlay.active{display:flex}
+.spinner-card{background:var(--surface);border-radius:16px;padding:2rem 2.5rem;text-align:center}
+.spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--green);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 1rem}
+@keyframes spin{to{transform:rotate(360deg)}}
 .done{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem}
 .done-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:2.5rem;max-width:420px;width:100%;text-align:center}
 .done-icon{width:56px;height:56px;border-radius:50%;background:var(--green-light);color:var(--green);font-size:26px;display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem}
 .done-card h2{font-size:20px;font-weight:600;margin-bottom:8px}
 .done-card p{font-size:14px;color:var(--muted);line-height:1.6}
-#main{display:block}#done{display:none}
 @media(max-width:500px){.perfil-row{flex-direction:column;align-items:flex-start;gap:8px}}
 </style>
 </head>
 <body>
+
 <div id="main">
   <div class="header">
     <div class="header-left">
@@ -68,6 +73,14 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <button class="btn-submit" id="btnEnviar" onclick="enviar()" disabled>Enviar validación</button>
   </div>
 </div>
+
+<div class="overlay" id="overlay">
+  <div class="spinner-card">
+    <div class="spinner"></div>
+    <p style="font-size:14px;color:var(--muted)">Guardando respuestas...</p>
+  </div>
+</div>
+
 <div id="done" style="display:none">
   <div class="done">
     <div class="done-card">
@@ -77,14 +90,21 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     </div>
   </div>
 </div>
+
 <script>
-const usuarios = [{"login": "ccornejo", "nombre": "Carla Cornejo", "perfiles": [{"app": "ANGULAR (PGS)", "perfil": "G_ROL_pgs_ordengiro_ejecutivo"}, {"app": "DOCUWARE", "perfil": "Formulario 57 Bis - Visualiza"}, {"app": "DOCUWARE", "perfil": "Habitat - Cotizaciones - Read (Archivador)"}, {"app": "DOCUWARE", "perfil": "PENSIONES - Liquidacion y Pensiones"}, {"app": "DOCUWARE", "perfil": "Planilla RecaudaciÃ³n Editar"}, {"app": "DOCUWARE", "perfil": "Reclamos Normativos - Reclamos Normativos Visualiza (Archivador)"}, {"app": "PEOPLESOFT - ERP Finanzas", "perfil": "HA_TR_CONS_OG_CHK"}, {"app": "PEOPLESOFT - ERP Finanzas", "perfil": "HA_TR_OPEROGIR"}, {"app": "PEOPLESOFT - ERP Finanzas", "perfil": "HA_TR_WF_CC_OG_COTIZREZ"}, {"app": "PEOPLESOFT - ERP Finanzas", "perfil": "HA_TR_WF_OG"}, {"app": "PEOPLESOFT - ERP Finanzas", "perfil": "HAB_AP_CFACT_APROBADOR"}, {"app": "PEOPLESOFT - ERP Finanzas", "perfil": "HAB_GEN_HERRAMIENTAS_BASICAS"}, {"app": "PEOPLESOFT - ERP Finanzas", "perfil": "HAB_GEN_USUARIO_BASICO"}, {"app": "PEOPLESOFT - ERP Finanzas", "perfil": "HAB_PO_WF_APROBADOR"}, {"app": "PEOPLESOFT - GESTOR", "perfil": "CTASPERSONA_CONSULTA"}, {"app": "PEOPLESOFT - GESTOR", "perfil": "PeopleSoft Guest"}, {"app": "PLATAFORMA OPERACIONAL - AD", "perfil": "G_Habitat_do2_ROL_PlatOperacional_ProcesosCuentas"}, {"app": "PLATAFORMA OPERACIONAL - AD", "perfil": "G_Habitat_do2_ROL_PlatOperacional_Unitario"}, {"app": "Portal Antiguo - Habiewb", "perfil": "RT-Por OmisiÃ³n"}, {"app": "RAD TRPENSION", "perfil": "inicio"}, {"app": "RAD TRPENSION", "perfil": "NCG-264 Barrido T"}, {"app": "RAD TRPENSION", "perfil": "NCG-264 Traspaso T+1"}, {"app": "SAP FINANZAS", "perfil": "ZS:BASICO"}, {"app": "SAP FINANZAS", "perfil": "ZS:TR:APROBADOR_OG"}, {"app": "V360", "perfil": "G_Habitat_do2_ROL_ATENC_CLTE_NO_HAB"}, {"app": "V360", "perfil": "G_Habitat_do2_ROL_ATENC_CLTE_Y_HAB"}]}];
-let vals = {};
+const JEFATURA = "LITZ ANDREA MAUREIRA VENEGONI";
+const CORREO   = "litz.maureira@afphabitat.cl";
+const USUARIOS = [{"login": "ccornejo", "nombre": "Carla Cornejo", "perfiles": [{"app": "ANGULAR (PGS)", "perfil": "G_ROL_pgs_ordengiro_ejecutivo"}, {"app": "DOCUWARE", "perfil": "Formulario 57 Bis - Visualiza"}, {"app": "DOCUWARE", "perfil": "Habitat - Cotizaciones - Read (Archivador)"}, {"app": "DOCUWARE", "perfil": "PENSIONES - Liquidacion y Pensiones"}, {"app": "DOCUWARE", "perfil": "Planilla RecaudaciÃ³n Editar"}, {"app": "DOCUWARE", "perfil": "Reclamos Normativos - Reclamos Normativos Visualiza (Archivador)"}, {"app": "PEOPLESOFT - ERP Finanzas", "perfil": "HA_TR_CONS_OG_CHK"}, {"app": "PEOPLESOFT - ERP Finanzas", "perfil": "HA_TR_OPEROGIR"}, {"app": "PEOPLESOFT - ERP Finanzas", "perfil": "HA_TR_WF_CC_OG_COTIZREZ"}, {"app": "PEOPLESOFT - ERP Finanzas", "perfil": "HA_TR_WF_OG"}, {"app": "PEOPLESOFT - ERP Finanzas", "perfil": "HAB_AP_CFACT_APROBADOR"}, {"app": "PEOPLESOFT - ERP Finanzas", "perfil": "HAB_GEN_HERRAMIENTAS_BASICAS"}, {"app": "PEOPLESOFT - ERP Finanzas", "perfil": "HAB_GEN_USUARIO_BASICO"}, {"app": "PEOPLESOFT - ERP Finanzas", "perfil": "HAB_PO_WF_APROBADOR"}, {"app": "PEOPLESOFT - GESTOR", "perfil": "CTASPERSONA_CONSULTA"}, {"app": "PEOPLESOFT - GESTOR", "perfil": "PeopleSoft Guest"}, {"app": "PLATAFORMA OPERACIONAL - AD", "perfil": "G_Habitat_do2_ROL_PlatOperacional_ProcesosCuentas"}, {"app": "PLATAFORMA OPERACIONAL - AD", "perfil": "G_Habitat_do2_ROL_PlatOperacional_Unitario"}, {"app": "Portal Antiguo - Habiewb", "perfil": "RT-Por OmisiÃ³n"}, {"app": "RAD TRPENSION", "perfil": "inicio"}, {"app": "RAD TRPENSION", "perfil": "NCG-264 Barrido T"}, {"app": "RAD TRPENSION", "perfil": "NCG-264 Traspaso T+1"}, {"app": "SAP FINANZAS", "perfil": "ZS:BASICO"}, {"app": "SAP FINANZAS", "perfil": "ZS:TR:APROBADOR_OG"}, {"app": "V360", "perfil": "G_Habitat_do2_ROL_ATENC_CLTE_NO_HAB"}, {"app": "V360", "perfil": "G_Habitat_do2_ROL_ATENC_CLTE_Y_HAB"}]}];
+const FORMS_BASE = "https://forms.cloud.microsoft/Pages/ResponsePage.aspx";
+const FORMS_ID   = "DnFrDPkA1UmE14lZroejsihXCZpRclNJuoB-ISVIbJ1UNVNZMlo1VFIySlIxNUJRTks2RzVCSkVNQi4u";
+const FIELDS     = {"Jefatura": "e5e3d703c05e434b879eaa398cb29c6e", "Correo": "ac1e99350f2143ccaae9fdac10553a0a", "Login": "048ec4838725404697ec9cae3e02d2e5", "Nombre": "93fa4d21ee30454296fd30d665b520b1", "Aplicacion": "95b4a5def7d2494f9e054c379fcfd2d0", "Perfil": "59c6dfc3d6aa4dbd84f8c143e39a492b", "Decision": "ce1d518f327046ccbc3d22e6e405f034", "Fecha": "0cd65b0e6b3e44d4a37229380d096fbd"};
+
+let vals  = {};
 let total = 0;
 
 window.onload = () => {
   const c = document.getElementById('container');
-  usuarios.forEach(u => {
+  USUARIOS.forEach(u => {
     total += u.perfiles.length;
     const ini = u.nombre.split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();
     const card = document.createElement('div');
@@ -101,8 +121,8 @@ window.onload = () => {
             <div class="perfil-name" title="${p.perfil}">${p.perfil}</div>
           </div>
           <div class="btns">
-            <button class="btn-val" onclick="setVal('${u.login}',${pi},'ok',this)">✓ OK</button>
-            <button class="btn-val" onclick="setVal('${u.login}',${pi},'nok',this)">✗ Remover</button>
+            <button class="btn-val" onclick="setVal('${u.login}',${pi},'OK',this)">✓ OK</button>
+            <button class="btn-val" onclick="setVal('${u.login}',${pi},'Remover',this)">✗ Remover</button>
           </div>
         </div>
       `).join('')}
@@ -117,7 +137,7 @@ function setVal(login, pi, val, btn) {
   const row = document.getElementById('row-'+login+'-'+pi);
   row.querySelectorAll('.btn-val').forEach(b=>b.className='btn-val');
   if (vals[key]===val) { delete vals[key]; }
-  else { vals[key]=val; btn.className='btn-val '+val; }
+  else { vals[key]=val; btn.className='btn-val '+(val==='OK'?'ok':'nok'); }
   actualizar();
 }
 
@@ -129,9 +149,54 @@ function actualizar() {
   document.getElementById('btnEnviar').disabled = done < total;
 }
 
-function enviar() {
+function buildFormsUrl(jefatura, correo, login, nombre, app, perfil, decision, fecha) {
+  const params = new URLSearchParams();
+  params.set('id', FORMS_ID);
+  params.set('r' + FIELDS.Jefatura,   jefatura);
+  params.set('r' + FIELDS.Correo,     correo);
+  params.set('r' + FIELDS.Login,      login);
+  params.set('r' + FIELDS.Nombre,     nombre);
+  params.set('r' + FIELDS.Aplicacion, app);
+  params.set('r' + FIELDS.Perfil,     perfil);
+  params.set('r' + FIELDS.Decision,   decision);
+  params.set('r' + FIELDS.Fecha,      fecha);
+  return FORMS_BASE + '?' + params.toString();
+}
+
+async function enviar() {
+  document.getElementById('overlay').classList.add('active');
+  const fecha = new Date().toLocaleString('es-CL');
+
+  // Enviar una respuesta por cada perfil al Forms
+  const promesas = [];
+  USUARIOS.forEach(u => {
+    u.perfiles.forEach((p, pi) => {
+      const key      = u.login + '-' + pi;
+      const decision = vals[key] || '';
+      const url      = buildFormsUrl(JEFATURA, CORREO, u.login, u.nombre, p.app, p.perfil, decision, fecha);
+      // Abrir cada respuesta en iframe oculto
+      promesas.push(enviarRespuesta(url));
+    });
+  });
+
+  await Promise.all(promesas);
+  await new Promise(r => setTimeout(r, 1500));
+
+  document.getElementById('overlay').classList.remove('active');
   document.getElementById('main').style.display = 'none';
-  document.getElementById('done').style.display = 'block';
+  document.getElementById('done').style.display  = 'block';
+}
+
+function enviarRespuesta(url) {
+  return new Promise((resolve) => {
+    const iframe = document.createElement('iframe');
+    iframe.style.display = 'none';
+    iframe.src = url;
+    iframe.onload = () => { resolve(); };
+    iframe.onerror = () => { resolve(); };
+    document.body.appendChild(iframe);
+    setTimeout(resolve, 3000);
+  });
 }
 </script>
 </body>
