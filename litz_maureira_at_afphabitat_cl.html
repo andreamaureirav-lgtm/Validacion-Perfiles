@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Validación de Perfiles</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#F5F4F0;--surface:#fff;--border:#E2E0DA;--text:#1A1916;--muted:#6B6860;--green:#1A6B4A;--green-light:#EAF4EF;--red:#C0392B;--red-light:#FDECEA;--radius:10px}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.header{background:var(--surface);border-bottom:1px solid var(--border);padding:1rem 1.5rem;position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.header-left h2{font-size:15px;font-weight:600}
+.header-left p{font-size:12px;color:var(--muted);margin-top:2px}
+.progress-wrap{display:flex;align-items:center;gap:10px}
+.progress-bar{width:120px;height:6px;background:var(--border);border-radius:99px;overflow:hidden}
+.progress-fill{height:100%;background:var(--green);border-radius:99px;transition:width .3s;width:0%}
+.progress-label{font-size:12px;color:var(--muted);white-space:nowrap}
+.body{max-width:720px;margin:0 auto;padding:1.5rem}
+.instruccion{background:var(--green-light);border:1px solid #C3E2D4;border-radius:var(--radius);padding:12px 16px;font-size:13px;color:var(--green);margin-bottom:1.5rem;line-height:1.5}
+.user-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:1rem;overflow:hidden}
+.user-header{padding:12px 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border);background:#FAFAF8}
+.avatar{width:36px;height:36px;border-radius:50%;background:var(--green-light);color:var(--green);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0}
+.user-name{font-size:14px;font-weight:500}
+.user-login{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace}
+.perfil-row{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1px solid var(--border);gap:12px}
+.perfil-row:last-child{border-bottom:none}
+.perfil-info{flex:1;min-width:0}
+.perfil-app{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}
+.perfil-name{font-size:12px;font-family:'DM Mono',monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.btns{display:flex;gap:6px;flex-shrink:0}
+.btn-val{padding:5px 14px;border-radius:6px;font-size:12px;font-weight:500;border:1px solid var(--border);background:transparent;cursor:pointer;transition:all .15s;color:var(--muted);font-family:'DM Sans',sans-serif}
+.btn-val:hover{background:var(--bg)}
+.btn-val.ok{background:var(--green-light);border-color:#A8D5BC;color:var(--green)}
+.btn-val.nok{background:var(--red-light);border-color:#F0B4AE;color:var(--red)}
+.footer{max-width:720px;margin:0 auto;padding:0 1.5rem 2rem;display:flex;justify-content:flex-end}
+.btn-submit{background:var(--green);color:#fff;border:none;border-radius:var(--radius);padding:12px 28px;font-size:14px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif}
+.btn-submit:hover{opacity:.88}
+.btn-submit:disabled{opacity:.4;cursor:not-allowed}
+.done{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem}
+.done-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:2.5rem;max-width:420px;width:100%;text-align:center}
+.done-icon{width:56px;height:56px;border-radius:50%;background:var(--green-light);color:var(--green);font-size:26px;display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem}
+.done-card h2{font-size:20px;font-weight:600;margin-bottom:8px}
+.done-card p{font-size:14px;color:var(--muted);line-height:1.6}
+#main{display:block}#done{display:none}
+@media(max-width:500px){.perfil-row{flex-direction:column;align-items:flex-start;gap:8px}}
+</style>
+</head>
+<body>
+<div id="main">
+  <div class="header">
+    <div class="header-left">
+      <h2>LITZ ANDREA MAUREIRA VENEGONI</h2>
+      <p>litz.maureira@afphabitat.cl</p>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      <span class="progress-label" id="progressLabel">0 / 0</span>
+    </div>
+  </div>
+  <div class="body">
+    <div class="instruccion">
+      Revisa cada perfil asignado a tu equipo y marca <strong>OK</strong> si es correcto, o <strong>Remover</strong> si debe ser eliminado. Debes revisar todos los perfiles antes de enviar.
+    </div>
+    <div id="container"></div>
+  </div>
+  <div class="footer">
+    <button class="btn-submit" id="btnEnviar" onclick="enviar()" disabled>Enviar validación</button>
+  </div>
+</div>
+<div id="done" style="display:none">
+  <div class="done">
+    <div class="done-card">
+      <div class="done-icon">✓</div>
+      <h2>¡Validación enviada!</h2>
+      <p>Gracias por revisar los perfiles de tu equipo. El equipo procesará tu respuesta a la brevedad.</p>
+    </div>
+  </div>
+</div>
+<script>
+const usuarios = [{"login": "ccornejo", "nombre": "Carla Cornejo", "perfiles": [{"app": "ANGULAR (PGS)", "perfil": "G_ROL_pgs_ordengiro_ejecutivo"}, {"app": "DOCUWARE", "perfil": "Formulario 57 Bis - Visualiza"}, {"app": "DOCUWARE", "perfil": "Habitat - Cotizaciones - Read (Archivador)"}, {"app": "DOCUWARE", "perfil": "PENSIONES - Liquidacion y Pensiones"}, {"app": "DOCUWARE", "perfil": "Planilla RecaudaciÃ³n Editar"}, {"app": "DOCUWARE", "perfil": "Reclamos Normativos - Reclamos Normativos Visualiza (Archivador)"}, {"app": "PEOPLESOFT - ERP Finanzas", "perfil": "HA_TR_CONS_OG_CHK"}, {"app": "PEOPLESOFT - ERP Finanzas", "perfil": "HA_TR_OPEROGIR"}, {"app": "PEOPLESOFT - ERP Finanzas", "perfil": "HA_TR_WF_CC_OG_COTIZREZ"}, {"app": "PEOPLESOFT - ERP Finanzas", "perfil": "HA_TR_WF_OG"}, {"app": "PEOPLESOFT - ERP Finanzas", "perfil": "HAB_AP_CFACT_APROBADOR"}, {"app": "PEOPLESOFT - ERP Finanzas", "perfil": "HAB_GEN_HERRAMIENTAS_BASICAS"}, {"app": "PEOPLESOFT - ERP Finanzas", "perfil": "HAB_GEN_USUARIO_BASICO"}, {"app": "PEOPLESOFT - ERP Finanzas", "perfil": "HAB_PO_WF_APROBADOR"}, {"app": "PEOPLESOFT - GESTOR", "perfil": "CTASPERSONA_CONSULTA"}, {"app": "PEOPLESOFT - GESTOR", "perfil": "PeopleSoft Guest"}, {"app": "PLATAFORMA OPERACIONAL - AD", "perfil": "G_Habitat_do2_ROL_PlatOperacional_ProcesosCuentas"}, {"app": "PLATAFORMA OPERACIONAL - AD", "perfil": "G_Habitat_do2_ROL_PlatOperacional_Unitario"}, {"app": "Portal Antiguo - Habiewb", "perfil": "RT-Por OmisiÃ³n"}, {"app": "RAD TRPENSION", "perfil": "inicio"}, {"app": "RAD TRPENSION", "perfil": "NCG-264 Barrido T"}, {"app": "RAD TRPENSION", "perfil": "NCG-264 Traspaso T+1"}, {"app": "SAP FINANZAS", "perfil": "ZS:BASICO"}, {"app": "SAP FINANZAS", "perfil": "ZS:TR:APROBADOR_OG"}, {"app": "V360", "perfil": "G_Habitat_do2_ROL_ATENC_CLTE_NO_HAB"}, {"app": "V360", "perfil": "G_Habitat_do2_ROL_ATENC_CLTE_Y_HAB"}]}];
+let vals = {};
+let total = 0;
+
+window.onload = () => {
+  const c = document.getElementById('container');
+  usuarios.forEach(u => {
+    total += u.perfiles.length;
+    const ini = u.nombre.split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();
+    const card = document.createElement('div');
+    card.className = 'user-card';
+    card.innerHTML = `
+      <div class="user-header">
+        <div class="avatar">${ini}</div>
+        <div><div class="user-name">${u.nombre}</div><div class="user-login">${u.login}</div></div>
+      </div>
+      ${u.perfiles.map((p,pi)=>`
+        <div class="perfil-row" id="row-${u.login}-${pi}">
+          <div class="perfil-info">
+            <div class="perfil-app">${p.app}</div>
+            <div class="perfil-name" title="${p.perfil}">${p.perfil}</div>
+          </div>
+          <div class="btns">
+            <button class="btn-val" onclick="setVal('${u.login}',${pi},'ok',this)">✓ OK</button>
+            <button class="btn-val" onclick="setVal('${u.login}',${pi},'nok',this)">✗ Remover</button>
+          </div>
+        </div>
+      `).join('')}
+    `;
+    c.appendChild(card);
+  });
+  actualizar();
+};
+
+function setVal(login, pi, val, btn) {
+  const key = login+'-'+pi;
+  const row = document.getElementById('row-'+login+'-'+pi);
+  row.querySelectorAll('.btn-val').forEach(b=>b.className='btn-val');
+  if (vals[key]===val) { delete vals[key]; }
+  else { vals[key]=val; btn.className='btn-val '+val; }
+  actualizar();
+}
+
+function actualizar() {
+  const done = Object.keys(vals).length;
+  const pct  = total>0 ? Math.round(done/total*100) : 0;
+  document.getElementById('progressFill').style.width = pct+'%';
+  document.getElementById('progressLabel').textContent = done+' / '+total;
+  document.getElementById('btnEnviar').disabled = done < total;
+}
+
+function enviar() {
+  document.getElementById('main').style.display = 'none';
+  document.getElementById('done').style.display = 'block';
+}
+</script>
+</body>
+</html>
