@@ -37,11 +37,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .btn-submit{background:var(--green);color:#fff;border:none;border-radius:var(--radius);padding:12px 28px;font-size:14px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif}
 .btn-submit:hover{opacity:.88}
 .btn-submit:disabled{opacity:.4;cursor:not-allowed}
-.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:100;align-items:center;justify-content:center}
-.overlay.active{display:flex}
-.spinner-card{background:var(--surface);border-radius:16px;padding:2rem 2.5rem;text-align:center}
-.spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--green);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 1rem}
-@keyframes spin{to{transform:rotate(360deg)}}
 .done{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem}
 .done-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:2.5rem;max-width:420px;width:100%;text-align:center}
 .done-icon{width:56px;height:56px;border-radius:50%;background:var(--green-light);color:var(--green);font-size:26px;display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem}
@@ -51,7 +46,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 </style>
 </head>
 <body>
-
 <div id="main">
   <div class="header">
     <div class="header-left">
@@ -73,14 +67,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <button class="btn-submit" id="btnEnviar" onclick="enviar()" disabled>Enviar validación</button>
   </div>
 </div>
-
-<div class="overlay" id="overlay">
-  <div class="spinner-card">
-    <div class="spinner"></div>
-    <p style="font-size:14px;color:var(--muted)">Guardando respuestas...</p>
-  </div>
-</div>
-
 <div id="done" style="display:none">
   <div class="done">
     <div class="done-card">
@@ -90,14 +76,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     </div>
   </div>
 </div>
-
 <script>
-const JEFATURA = "LITZ ANDREA MAUREIRA VENEGONI";
-const CORREO   = "litz.maureira@afphabitat.cl";
-const USUARIOS = [{"login": "ccornejo", "nombre": "Carla Cornejo", "perfiles": [{"app": "ANGULAR (PGS)", "perfil": "G_ROL_pgs_ordengiro_ejecutivo"}, {"app": "DOCUWARE", "perfil": "Formulario 57 Bis - Visualiza"}, {"app": "DOCUWARE", "perfil": "Habitat - Cotizaciones - Read (Archivador)"}, {"app": "DOCUWARE", "perfil": "PENSIONES - Liquidacion y Pensiones"}, {"app": "DOCUWARE", "perfil": "Planilla RecaudaciÃ³n Editar"}, {"app": "DOCUWARE", "perfil": "Reclamos Normativos - Reclamos Normativos Visualiza (Archivador)"}, {"app": "PEOPLESOFT - ERP Finanzas", "perfil": "HA_TR_CONS_OG_CHK"}, {"app": "PEOPLESOFT - ERP Finanzas", "perfil": "HA_TR_OPEROGIR"}, {"app": "PEOPLESOFT - ERP Finanzas", "perfil": "HA_TR_WF_CC_OG_COTIZREZ"}, {"app": "PEOPLESOFT - ERP Finanzas", "perfil": "HA_TR_WF_OG"}, {"app": "PEOPLESOFT - ERP Finanzas", "perfil": "HAB_AP_CFACT_APROBADOR"}, {"app": "PEOPLESOFT - ERP Finanzas", "perfil": "HAB_GEN_HERRAMIENTAS_BASICAS"}, {"app": "PEOPLESOFT - ERP Finanzas", "perfil": "HAB_GEN_USUARIO_BASICO"}, {"app": "PEOPLESOFT - ERP Finanzas", "perfil": "HAB_PO_WF_APROBADOR"}, {"app": "PEOPLESOFT - GESTOR", "perfil": "CTASPERSONA_CONSULTA"}, {"app": "PEOPLESOFT - GESTOR", "perfil": "PeopleSoft Guest"}, {"app": "PLATAFORMA OPERACIONAL - AD", "perfil": "G_Habitat_do2_ROL_PlatOperacional_ProcesosCuentas"}, {"app": "PLATAFORMA OPERACIONAL - AD", "perfil": "G_Habitat_do2_ROL_PlatOperacional_Unitario"}, {"app": "Portal Antiguo - Habiewb", "perfil": "RT-Por OmisiÃ³n"}, {"app": "RAD TRPENSION", "perfil": "inicio"}, {"app": "RAD TRPENSION", "perfil": "NCG-264 Barrido T"}, {"app": "RAD TRPENSION", "perfil": "NCG-264 Traspaso T+1"}, {"app": "SAP FINANZAS", "perfil": "ZS:BASICO"}, {"app": "SAP FINANZAS", "perfil": "ZS:TR:APROBADOR_OG"}, {"app": "V360", "perfil": "G_Habitat_do2_ROL_ATENC_CLTE_NO_HAB"}, {"app": "V360", "perfil": "G_Habitat_do2_ROL_ATENC_CLTE_Y_HAB"}]}];
-const FORMS_BASE = "https://forms.cloud.microsoft/Pages/ResponsePage.aspx";
-const FORMS_ID   = "DnFrDPkA1UmE14lZroejsihXCZpRclNJuoB-ISVIbJ1UNVNZMlo1VFIySlIxNUJRTks2RzVCSkVNQi4u";
-const FIELDS     = {"Jefatura": "e5e3d703c05e434b879eaa398cb29c6e", "Correo": "ac1e99350f2143ccaae9fdac10553a0a", "Login": "048ec4838725404697ec9cae3e02d2e5", "Nombre": "93fa4d21ee30454296fd30d665b520b1", "Aplicacion": "95b4a5def7d2494f9e054c379fcfd2d0", "Perfil": "59c6dfc3d6aa4dbd84f8c143e39a492b", "Decision": "ce1d518f327046ccbc3d22e6e405f034", "Fecha": "0cd65b0e6b3e44d4a37229380d096fbd"};
+const JEFATURA  = "LITZ ANDREA MAUREIRA VENEGONI";
+const CORREO    = "litz.maureira@afphabitat.cl";
+const USUARIOS  = [{"login": "ccornejo", "nombre": "Carla Cornejo", "perfiles": [{"app": "ANGULAR (PGS)", "perfil": "G_ROL_pgs_ordengiro_ejecutivo"}, {"app": "DOCUWARE", "perfil": "Formulario 57 Bis - Visualiza"}, {"app": "DOCUWARE", "perfil": "Habitat - Cotizaciones - Read (Archivador)"}, {"app": "DOCUWARE", "perfil": "PENSIONES - Liquidacion y Pensiones"}, {"app": "DOCUWARE", "perfil": "Planilla RecaudaciÃ³n Editar"}, {"app": "DOCUWARE", "perfil": "Reclamos Normativos - Reclamos Normativos Visualiza (Archivador)"}, {"app": "PEOPLESOFT - ERP Finanzas", "perfil": "HA_TR_CONS_OG_CHK"}, {"app": "PEOPLESOFT - ERP Finanzas", "perfil": "HA_TR_OPEROGIR"}, {"app": "PEOPLESOFT - ERP Finanzas", "perfil": "HA_TR_WF_CC_OG_COTIZREZ"}, {"app": "PEOPLESOFT - ERP Finanzas", "perfil": "HA_TR_WF_OG"}, {"app": "PEOPLESOFT - ERP Finanzas", "perfil": "HAB_AP_CFACT_APROBADOR"}, {"app": "PEOPLESOFT - ERP Finanzas", "perfil": "HAB_GEN_HERRAMIENTAS_BASICAS"}, {"app": "PEOPLESOFT - ERP Finanzas", "perfil": "HAB_GEN_USUARIO_BASICO"}, {"app": "PEOPLESOFT - ERP Finanzas", "perfil": "HAB_PO_WF_APROBADOR"}, {"app": "PEOPLESOFT - GESTOR", "perfil": "CTASPERSONA_CONSULTA"}, {"app": "PEOPLESOFT - GESTOR", "perfil": "PeopleSoft Guest"}, {"app": "PLATAFORMA OPERACIONAL - AD", "perfil": "G_Habitat_do2_ROL_PlatOperacional_ProcesosCuentas"}, {"app": "PLATAFORMA OPERACIONAL - AD", "perfil": "G_Habitat_do2_ROL_PlatOperacional_Unitario"}, {"app": "Portal Antiguo - Habiewb", "perfil": "RT-Por OmisiÃ³n"}, {"app": "RAD TRPENSION", "perfil": "inicio"}, {"app": "RAD TRPENSION", "perfil": "NCG-264 Barrido T"}, {"app": "RAD TRPENSION", "perfil": "NCG-264 Traspaso T+1"}, {"app": "SAP FINANZAS", "perfil": "ZS:BASICO"}, {"app": "SAP FINANZAS", "perfil": "ZS:TR:APROBADOR_OG"}, {"app": "V360", "perfil": "G_Habitat_do2_ROL_ATENC_CLTE_NO_HAB"}, {"app": "V360", "perfil": "G_Habitat_do2_ROL_ATENC_CLTE_Y_HAB"}]}];
+const TU_CORREO = "lmaureir@afphabitat.cl";
 
 let vals  = {};
 let total = 0;
@@ -149,54 +132,62 @@ function actualizar() {
   document.getElementById('btnEnviar').disabled = done < total;
 }
 
-function buildFormsUrl(jefatura, correo, login, nombre, app, perfil, decision, fecha) {
-  const params = new URLSearchParams();
-  params.set('id', FORMS_ID);
-  params.set('r' + FIELDS.Jefatura,   jefatura);
-  params.set('r' + FIELDS.Correo,     correo);
-  params.set('r' + FIELDS.Login,      login);
-  params.set('r' + FIELDS.Nombre,     nombre);
-  params.set('r' + FIELDS.Aplicacion, app);
-  params.set('r' + FIELDS.Perfil,     perfil);
-  params.set('r' + FIELDS.Decision,   decision);
-  params.set('r' + FIELDS.Fecha,      fecha);
-  return FORMS_BASE + '?' + params.toString();
-}
-
-async function enviar() {
-  document.getElementById('overlay').classList.add('active');
+function enviar() {
   const fecha = new Date().toLocaleString('es-CL');
 
-  // Enviar una respuesta por cada perfil al Forms
-  const promesas = [];
+  // Construir tabla visible para el jefe
+  let tablaHTML = `<table border="1" cellpadding="6" cellspacing="0" style="border-collapse:collapse;font-family:Arial,sans-serif;font-size:13px">
+    <thead style="background:#1A6B4A;color:white">
+      <tr><th>Usuario</th><th>Login</th><th>Aplicación</th><th>Perfil</th><th>Decisión</th></tr>
+    </thead><tbody>`;
+
+  // Construir datos estructurados ocultos (JSON en comentario HTML)
+  const datos = [];
+
   USUARIOS.forEach(u => {
     u.perfiles.forEach((p, pi) => {
-      const key      = u.login + '-' + pi;
-      const decision = vals[key] || '';
-      const url      = buildFormsUrl(JEFATURA, CORREO, u.login, u.nombre, p.app, p.perfil, decision, fecha);
-      // Abrir cada respuesta en iframe oculto
-      promesas.push(enviarRespuesta(url));
+      const decision = vals[u.login+'-'+pi] || '';
+      const color    = decision === 'OK' ? '#EAF4EF' : '#FDECEA';
+      tablaHTML += `<tr style="background:${color}">
+        <td>${u.nombre}</td>
+        <td style="font-family:monospace">${u.login}</td>
+        <td>${p.app}</td>
+        <td style="font-family:monospace">${p.perfil}</td>
+        <td style="font-weight:bold">${decision}</td>
+      </tr>`;
+      datos.push({
+        jefatura:   JEFATURA,
+        correo:     CORREO,
+        login:      u.login,
+        nombre:     u.nombre,
+        aplicacion: p.app,
+        perfil:     p.perfil,
+        decision:   decision,
+        fecha:      fecha
+      });
     });
   });
+  tablaHTML += '</tbody></table>';
 
-  await Promise.all(promesas);
-  await new Promise(r => setTimeout(r, 1500));
+  // Datos estructurados ocultos para el script de consolidación
+  const datosOcultos = '<!--VALIDACION_DATA:' + btoa(unescape(encodeURIComponent(JSON.stringify(datos)))) + ':END_DATA-->';
 
-  document.getElementById('overlay').classList.remove('active');
+  const cuerpo = `mailto:${TU_CORREO}?subject=${encodeURIComponent('VALIDACION PERFILES | ' + JEFATURA + ' | ' + fecha)}&body=${encodeURIComponent('Adjunto el resultado de la validación de perfiles de mi equipo.
+
+Por favor no modificar el contenido de este correo.
+
+---
+
+Este correo fue generado automáticamente.')}`;
+
+  // Abrir cliente de correo
+  window.location.href = cuerpo;
+
+  // Guardar datos en sessionStorage para el script
+  sessionStorage.setItem('validacion_pendiente', JSON.stringify({tablaHTML, datosOcultos, fecha}));
+
   document.getElementById('main').style.display = 'none';
   document.getElementById('done').style.display  = 'block';
-}
-
-function enviarRespuesta(url) {
-  return new Promise((resolve) => {
-    const iframe = document.createElement('iframe');
-    iframe.style.display = 'none';
-    iframe.src = url;
-    iframe.onload = () => { resolve(); };
-    iframe.onerror = () => { resolve(); };
-    document.body.appendChild(iframe);
-    setTimeout(resolve, 3000);
-  });
 }
 </script>
 </body>
