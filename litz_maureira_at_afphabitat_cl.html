@@ -116,9 +116,9 @@ window.onload = function() {
           "<div class='perfil-name' title='" + p.perfil + "'>" + p.perfil + "</div>" +
         "</div>" +
         "<div class='btns'>" +
-          "<button class='btn-val' id='ok-" + i + "' onclick='setVal(" + i + ", "OK", this)'>&#10003; OK</button>" +
-          "<button class='btn-val' id='nok-" + i + "' onclick='setVal(" + i + ", "Remover", this)'>&#10007; Remover</button>" +
-        "</div>" +
+        "<button class='btn-val' id='ok-" + i + "' onclick="setVal(" + i + ", 'OK', this)">&#10003; OK</button>" +
+          "<button class='btn-val' id='nok-" + i + "' onclick="setVal(" + i + ", 'Remover', this)">&#10007; Remover</button>" +
+      "</div>" +
       "</div>";
     });
     card.innerHTML =
