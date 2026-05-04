@@ -47,7 +47,6 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);min
 .done-icon{width:56px;height:56px;border-radius:50%;background:var(--green-light);color:var(--green);font-size:26px;display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem}
 .done-card h2{font-size:20px;font-weight:600;margin-bottom:8px}
 .done-card p{font-size:14px;color:var(--muted);line-height:1.6}
-@media(max-width:500px){.perfil-row{flex-direction:column;align-items:flex-start;gap:8px}.global-btns{flex-direction:column}}
 </style>
 </head>
 <body>
@@ -90,70 +89,71 @@ var JEFATURA  = "LITZ ANDREA MAUREIRA VENEGONI";
 var CORREO    = "litz.maureira@afphabitat.cl";
 var TU_CORREO = "lmaureir@afphabitat.cl";
 var USUARIOS  = [{"login": "vtorres", "nombre": "Vicente Torres", "perfiles": [{"app": "ANGULAR (PGS)", "perfil": "G_ROL_pgs_ordengiro_ejecutivo"}, {"app": "DOCUWARE", "perfil": "Formulario 57 Bis - Visualiza"}, {"app": "DOCUWARE", "perfil": "Habitat - Cotizaciones - Read (Archivador)"}, {"app": "DOCUWARE", "perfil": "PENSIONES - Liquidacion y Pensiones"}, {"app": "DOCUWARE", "perfil": "Planilla RecaudaciÃ³n Editar"}, {"app": "DOCUWARE", "perfil": "Reclamos Normativos - Reclamos Normativos Visualiza (Archivador)"}, {"app": "PEOPLESOFT - ERP Finanzas", "perfil": "HA_TR_CONS_OG_CHK"}, {"app": "PEOPLESOFT - ERP Finanzas", "perfil": "HA_TR_OPEROGIR"}, {"app": "PEOPLESOFT - ERP Finanzas", "perfil": "HA_TR_WF_CC_OG_COTIZREZ"}, {"app": "PEOPLESOFT - ERP Finanzas", "perfil": "HA_TR_WF_OG"}, {"app": "PEOPLESOFT - ERP Finanzas", "perfil": "HAB_AP_CFACT_APROBADOR"}, {"app": "PEOPLESOFT - ERP Finanzas", "perfil": "HAB_GEN_HERRAMIENTAS_BASICAS"}, {"app": "PEOPLESOFT - ERP Finanzas", "perfil": "HAB_GEN_USUARIO_BASICO"}, {"app": "PEOPLESOFT - ERP Finanzas", "perfil": "HAB_PO_WF_APROBADOR"}, {"app": "PEOPLESOFT - GESTOR", "perfil": "CTASPERSONA_CONSULTA"}, {"app": "PEOPLESOFT - GESTOR", "perfil": "PeopleSoft Guest"}, {"app": "PLATAFORMA OPERACIONAL - AD", "perfil": "G_Habitat_do2_ROL_PlatOperacional_ProcesosCuentas"}, {"app": "PLATAFORMA OPERACIONAL - AD", "perfil": "G_Habitat_do2_ROL_PlatOperacional_Unitario"}, {"app": "Portal Antiguo - Habiewb", "perfil": "RT-Por OmisiÃ³n"}, {"app": "RAD TRPENSION", "perfil": "inicio"}, {"app": "RAD TRPENSION", "perfil": "NCG-264 Barrido T"}, {"app": "RAD TRPENSION", "perfil": "NCG-264 Traspaso T+1"}, {"app": "SAP FINANZAS", "perfil": "ZS:BASICO"}, {"app": "SAP FINANZAS", "perfil": "ZS:TR:APROBADOR_OG"}, {"app": "V360", "perfil": "G_Habitat_do2_ROL_ATENC_CLTE_NO_HAB"}, {"app": "V360", "perfil": "G_Habitat_do2_ROL_ATENC_CLTE_Y_HAB"}]}];
-
-var vals  = {};
+var vals = {};
 var total = 0;
-var allRows = [];
+var totalRows = 0;
 
 document.getElementById("jef-nombre").textContent = JEFATURA;
 document.getElementById("jef-correo").textContent = CORREO;
 
 window.onload = function() {
   var c = document.getElementById("container");
-  var idx = 0;
   USUARIOS.forEach(function(u) {
     total += u.perfiles.length;
-    var ini = u.nombre.split(" ").map(function(w){ return w[0] || ""; }).slice(0,2).join("").toUpperCase();
+    var ini = u.nombre.split(" ").map(function(w){ return w[0]||""; }).slice(0,2).join("").toUpperCase();
     var card = document.createElement("div");
     card.className = "user-card";
     var rows = "";
     u.perfiles.forEach(function(p) {
-      var i = idx++;
-      allRows.push(i);
-      rows += "<div class='perfil-row' id='row-" + i + "'>" +
-        "<div class='perfil-info'>" +
-          "<div class='perfil-app'>" + p.app + "</div>" +
-          "<div class='perfil-name' title='" + p.perfil + "'>" + p.perfil + "</div>" +
+      var i = totalRows++;
+      rows += "<div class=\"perfil-row\" id=\"row-"+i+"\">" +
+        "<div class=\"perfil-info\">" +
+          "<div class=\"perfil-app\">"+p.app+"</div>" +
+          "<div class=\"perfil-name\">"+p.perfil+"</div>" +
         "</div>" +
-        "<div class='btns'>" +
-        "<button class='btn-val' id='ok-" + i + "' onclick="setVal(" + i + ", 'OK', this)">&#10003; OK</button>" +
-          "<button class='btn-val' id='nok-" + i + "' onclick="setVal(" + i + ", 'Remover', this)">&#10007; Remover</button>" +
-      "</div>" +
+        "<div class=\"btns\">" +
+          "<button class=\"btn-val\" id=\"ok-"+i+"\" data-idx=\""+i+"\" data-val=\"OK\" onclick=\"handleVal(this)\">&#10003; OK</button>" +
+          "<button class=\"btn-val\" id=\"nok-"+i+"\" data-idx=\""+i+"\" data-val=\"Remover\" onclick=\"handleVal(this)\">&#10007; Remover</button>" +
+        "</div>" +
       "</div>";
     });
     card.innerHTML =
-      "<div class='user-header'>" +
-        "<div class='avatar'>" + ini + "</div>" +
-        "<div><div class='user-name'>" + u.nombre + "</div><div class='user-login'>" + u.login + "</div></div>" +
+      "<div class=\"user-header\">" +
+        "<div class=\"avatar\">"+ini+"</div>" +
+        "<div><div class=\"user-name\">"+u.nombre+"</div><div class=\"user-login\">"+u.login+"</div></div>" +
       "</div>" + rows;
     c.appendChild(card);
   });
   actualizar();
 };
 
-function setVal(idx, val, btn) {
-  var okBtn  = document.getElementById("ok-"  + idx);
-  var nokBtn = document.getElementById("nok-" + idx);
+function handleVal(btn) {
+  var idx = btn.getAttribute("data-idx");
+  var val = btn.getAttribute("data-val");
+  var okBtn  = document.getElementById("ok-"+idx);
+  var nokBtn = document.getElementById("nok-"+idx);
   if (vals[idx] === val) {
     delete vals[idx];
     okBtn.className  = "btn-val";
     nokBtn.className = "btn-val";
   } else {
     vals[idx] = val;
-    okBtn.className  = "btn-val" + (val === "OK"      ? " ok"  : "");
-    nokBtn.className = "btn-val" + (val === "Remover" ? " nok" : "");
+    okBtn.className  = val === "OK"      ? "btn-val ok"  : "btn-val";
+    nokBtn.className = val === "Remover" ? "btn-val nok" : "btn-val";
   }
   actualizar();
 }
 
 function marcarTodo(val) {
-  allRows.forEach(function(i) {
+  for (var i = 0; i < totalRows; i++) {
     vals[i] = val;
-    var okBtn  = document.getElementById("ok-"  + i);
-    var nokBtn = document.getElementById("nok-" + i);
-    okBtn.className  = "btn-val" + (val === "OK"      ? " ok"  : "");
-    nokBtn.className = "btn-val" + (val === "Remover" ? " nok" : "");
-  });
+    var okBtn  = document.getElementById("ok-"+i);
+    var nokBtn = document.getElementById("nok-"+i);
+    if (okBtn && nokBtn) {
+      okBtn.className  = val === "OK"      ? "btn-val ok"  : "btn-val";
+      nokBtn.className = val === "Remover" ? "btn-val nok" : "btn-val";
+    }
+  }
   actualizar();
 }
 
