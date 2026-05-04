@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Validación de Perfiles</title>
+<title>Validacion de Perfiles</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -49,8 +49,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 <div id="main">
   <div class="header">
     <div class="header-left">
-      <h2>CARLA BELEN CORNEJO DIAZ</h2>
-      <p>carla.cornejo@afphabitat.cl</p>
+      <h2 id="jef-nombre"></h2>
+      <p id="jef-correo"></p>
     </div>
     <div class="progress-wrap">
       <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
@@ -64,128 +64,88 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <div id="container"></div>
   </div>
   <div class="footer">
-    <button class="btn-submit" id="btnEnviar" onclick="enviar()" disabled>Enviar validación</button>
+    <button class="btn-submit" id="btnEnviar" onclick="enviar()" disabled>Enviar validacion</button>
   </div>
 </div>
 <div id="done" style="display:none">
   <div class="done">
     <div class="done-card">
-      <div class="done-icon">✓</div>
-      <h2>¡Validación enviada!</h2>
-      <p>Gracias por revisar los perfiles de tu equipo. El equipo procesará tu respuesta a la brevedad.</p>
+      <div class="done-icon">&#10003;</div>
+      <h2>Validacion enviada!</h2>
+      <p>Gracias por revisar los perfiles de tu equipo. El equipo procesara tu respuesta a la brevedad.</p>
     </div>
   </div>
 </div>
 <script>
-const JEFATURA  = "CARLA BELEN CORNEJO DIAZ";
-const CORREO    = "carla.cornejo@afphabitat.cl";
-const USUARIOS  = [{"login": "fdattoli", "nombre": "Francisco Dattoli", "perfiles": [{"app": "ANGULAR (PGS)", "perfil": "G_ROL_pgs_ordengiro_ejecutivo"}, {"app": "DOCUWARE", "perfil": "Formulario 57 Bis - Visualiza"}, {"app": "DOCUWARE", "perfil": "Habitat - Cotizaciones - Read (Archivador)"}, {"app": "DOCUWARE", "perfil": "PENSIONES - Liquidacion y Pensiones"}, {"app": "DOCUWARE", "perfil": "Planilla RecaudaciÃ³n Editar"}, {"app": "DOCUWARE", "perfil": "Reclamos Normativos - Reclamos Normativos Visualiza (Archivador)"}, {"app": "PEOPLESOFT - ERP Finanzas", "perfil": "HA_TR_CONS_OG_CHK"}, {"app": "PEOPLESOFT - ERP Finanzas", "perfil": "HA_TR_OPEROGIR"}, {"app": "PEOPLESOFT - ERP Finanzas", "perfil": "HA_TR_WF_CC_OG_COTIZREZ"}, {"app": "PEOPLESOFT - ERP Finanzas", "perfil": "HA_TR_WF_OG"}, {"app": "PEOPLESOFT - ERP Finanzas", "perfil": "HAB_AP_CFACT_APROBADOR"}, {"app": "PEOPLESOFT - ERP Finanzas", "perfil": "HAB_GEN_HERRAMIENTAS_BASICAS"}, {"app": "PEOPLESOFT - ERP Finanzas", "perfil": "HAB_GEN_USUARIO_BASICO"}, {"app": "PEOPLESOFT - ERP Finanzas", "perfil": "HAB_PO_WF_APROBADOR"}, {"app": "PEOPLESOFT - GESTOR", "perfil": "CTASPERSONA_CONSULTA"}, {"app": "PEOPLESOFT - GESTOR", "perfil": "PeopleSoft Guest"}, {"app": "PLATAFORMA OPERACIONAL - AD", "perfil": "G_Habitat_do2_ROL_PlatOperacional_ProcesosCuentas"}, {"app": "PLATAFORMA OPERACIONAL - AD", "perfil": "G_Habitat_do2_ROL_PlatOperacional_Unitario"}, {"app": "Portal Antiguo - Habiewb", "perfil": "RT-Por OmisiÃ³n"}, {"app": "RAD TRPENSION", "perfil": "inicio"}, {"app": "RAD TRPENSION", "perfil": "NCG-264 Barrido T"}, {"app": "RAD TRPENSION", "perfil": "NCG-264 Traspaso T+1"}, {"app": "SAP FINANZAS", "perfil": "ZS:BASICO"}, {"app": "SAP FINANZAS", "perfil": "ZS:TR:APROBADOR_OG"}, {"app": "V360", "perfil": "G_Habitat_do2_ROL_ATENC_CLTE_NO_HAB"}, {"app": "V360", "perfil": "G_Habitat_do2_ROL_ATENC_CLTE_Y_HAB"}]}];
-const TU_CORREO = "lmaureir@afphabitat.cl";
+var JEFATURA  = "CARLA BELEN CORNEJO DIAZ";
+var CORREO    = "carla.cornejo@afphabitat.cl";
+var TU_CORREO = "lmaureir@afphabitat.cl";
+var USUARIOS  = [{"login": "fdattoli", "nombre": "Francisco Dattoli", "perfiles": [{"app": "ANGULAR (PGS)", "perfil": "G_ROL_pgs_ordengiro_ejecutivo"}, {"app": "DOCUWARE", "perfil": "Formulario 57 Bis - Visualiza"}, {"app": "DOCUWARE", "perfil": "Habitat - Cotizaciones - Read (Archivador)"}, {"app": "DOCUWARE", "perfil": "PENSIONES - Liquidacion y Pensiones"}, {"app": "DOCUWARE", "perfil": "Planilla Recaudaci\u00c3\u00b3n Editar"}, {"app": "DOCUWARE", "perfil": "Reclamos Normativos - Reclamos Normativos Visualiza (Archivador)"}, {"app": "PEOPLESOFT - ERP Finanzas", "perfil": "HA_TR_CONS_OG_CHK"}, {"app": "PEOPLESOFT - ERP Finanzas", "perfil": "HA_TR_OPEROGIR"}, {"app": "PEOPLESOFT - ERP Finanzas", "perfil": "HA_TR_WF_CC_OG_COTIZREZ"}, {"app": "PEOPLESOFT - ERP Finanzas", "perfil": "HA_TR_WF_OG"}, {"app": "PEOPLESOFT - ERP Finanzas", "perfil": "HAB_AP_CFACT_APROBADOR"}, {"app": "PEOPLESOFT - ERP Finanzas", "perfil": "HAB_GEN_HERRAMIENTAS_BASICAS"}, {"app": "PEOPLESOFT - ERP Finanzas", "perfil": "HAB_GEN_USUARIO_BASICO"}, {"app": "PEOPLESOFT - ERP Finanzas", "perfil": "HAB_PO_WF_APROBADOR"}, {"app": "PEOPLESOFT - GESTOR", "perfil": "CTASPERSONA_CONSULTA"}, {"app": "PEOPLESOFT - GESTOR", "perfil": "PeopleSoft Guest"}, {"app": "PLATAFORMA OPERACIONAL - AD", "perfil": "G_Habitat_do2_ROL_PlatOperacional_ProcesosCuentas"}, {"app": "PLATAFORMA OPERACIONAL - AD", "perfil": "G_Habitat_do2_ROL_PlatOperacional_Unitario"}, {"app": "Portal Antiguo - Habiewb", "perfil": "RT-Por Omisi\u00c3\u00b3n"}, {"app": "RAD TRPENSION", "perfil": "inicio"}, {"app": "RAD TRPENSION", "perfil": "NCG-264 Barrido T"}, {"app": "RAD TRPENSION", "perfil": "NCG-264 Traspaso T+1"}, {"app": "SAP FINANZAS", "perfil": "ZS:BASICO"}, {"app": "SAP FINANZAS", "perfil": "ZS:TR:APROBADOR_OG"}, {"app": "V360", "perfil": "G_Habitat_do2_ROL_ATENC_CLTE_NO_HAB"}, {"app": "V360", "perfil": "G_Habitat_do2_ROL_ATENC_CLTE_Y_HAB"}]}];
 
-let vals  = {};
-let total = 0;
+var vals  = {};
+var total = 0;
 
-window.onload = () => {
-  const c = document.getElementById('container');
-  USUARIOS.forEach(u => {
+document.getElementById('jef-nombre').textContent = JEFATURA;
+document.getElementById('jef-correo').textContent = CORREO;
+
+window.onload = function() {
+  var c = document.getElementById('container');
+  USUARIOS.forEach(function(u) {
     total += u.perfiles.length;
-    const ini = u.nombre.split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();
-    const card = document.createElement('div');
+    var ini = u.nombre.split(' ').map(function(w){return w[0];}).slice(0,2).join('').toUpperCase();
+    var card = document.createElement('div');
     card.className = 'user-card';
-    card.innerHTML = `
-      <div class="user-header">
-        <div class="avatar">${ini}</div>
-        <div><div class="user-name">${u.nombre}</div><div class="user-login">${u.login}</div></div>
-      </div>
-      ${u.perfiles.map((p,pi)=>`
-        <div class="perfil-row" id="row-${u.login}-${pi}">
-          <div class="perfil-info">
-            <div class="perfil-app">${p.app}</div>
-            <div class="perfil-name" title="${p.perfil}">${p.perfil}</div>
-          </div>
-          <div class="btns">
-            <button class="btn-val" onclick="setVal('${u.login}',${pi},'OK',this)">✓ OK</button>
-            <button class="btn-val" onclick="setVal('${u.login}',${pi},'Remover',this)">✗ Remover</button>
-          </div>
-        </div>
-      `).join('')}
-    `;
+    var perfilRows = u.perfiles.map(function(p, pi) {
+      return '<div class="perfil-row" id="row-' + u.login + '-' + pi + '">' +
+        '<div class="perfil-info">' +
+          '<div class="perfil-app">' + p.app + '</div>' +
+          '<div class="perfil-name" title="' + p.perfil + '">' + p.perfil + '</div>' +
+        '</div>' +
+        '<div class="btns">' +
+          '<button class="btn-val" onclick="setVal('' + u.login + '',' + pi + ','OK',this)">&#10003; OK</button>' +
+          '<button class="btn-val" onclick="setVal('' + u.login + '',' + pi + ','Remover',this)">&#10007; Remover</button>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+    card.innerHTML =
+      '<div class="user-header">' +
+        '<div class="avatar">' + ini + '</div>' +
+        '<div><div class="user-name">' + u.nombre + '</div><div class="user-login">' + u.login + '</div></div>' +
+      '</div>' + perfilRows;
     c.appendChild(card);
   });
   actualizar();
 };
 
 function setVal(login, pi, val, btn) {
-  const key = login+'-'+pi;
-  const row = document.getElementById('row-'+login+'-'+pi);
-  row.querySelectorAll('.btn-val').forEach(b=>b.className='btn-val');
-  if (vals[key]===val) { delete vals[key]; }
-  else { vals[key]=val; btn.className='btn-val '+(val==='OK'?'ok':'nok'); }
+  var key = login + '-' + pi;
+  var row = document.getElementById('row-' + login + '-' + pi);
+  row.querySelectorAll('.btn-val').forEach(function(b){b.className='btn-val';});
+  if (vals[key] === val) { delete vals[key]; }
+  else { vals[key] = val; btn.className = 'btn-val ' + (val === 'OK' ? 'ok' : 'nok'); }
   actualizar();
 }
 
 function actualizar() {
-  const done = Object.keys(vals).length;
-  const pct  = total>0 ? Math.round(done/total*100) : 0;
-  document.getElementById('progressFill').style.width = pct+'%';
-  document.getElementById('progressLabel').textContent = done+' / '+total;
+  var done = Object.keys(vals).length;
+  var pct  = total > 0 ? Math.round(done / total * 100) : 0;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = done + ' / ' + total;
   document.getElementById('btnEnviar').disabled = done < total;
 }
 
 function enviar() {
-  const fecha = new Date().toLocaleString('es-CL');
-
-  // Construir tabla visible para el jefe
-  let tablaHTML = `<table border="1" cellpadding="6" cellspacing="0" style="border-collapse:collapse;font-family:Arial,sans-serif;font-size:13px">
-    <thead style="background:#1A6B4A;color:white">
-      <tr><th>Usuario</th><th>Login</th><th>Aplicación</th><th>Perfil</th><th>Decisión</th></tr>
-    </thead><tbody>`;
-
-  // Construir datos estructurados ocultos (JSON en comentario HTML)
-  const datos = [];
-
-  USUARIOS.forEach(u => {
-    u.perfiles.forEach((p, pi) => {
-      const decision = vals[u.login+'-'+pi] || '';
-      const color    = decision === 'OK' ? '#EAF4EF' : '#FDECEA';
-      tablaHTML += `<tr style="background:${color}">
-        <td>${u.nombre}</td>
-        <td style="font-family:monospace">${u.login}</td>
-        <td>${p.app}</td>
-        <td style="font-family:monospace">${p.perfil}</td>
-        <td style="font-weight:bold">${decision}</td>
-      </tr>`;
-      datos.push({
-        jefatura:   JEFATURA,
-        correo:     CORREO,
-        login:      u.login,
-        nombre:     u.nombre,
-        aplicacion: p.app,
-        perfil:     p.perfil,
-        decision:   decision,
-        fecha:      fecha
-      });
+  var fecha = new Date().toLocaleString('es-CL');
+  var lineas = [];
+  USUARIOS.forEach(function(u) {
+    u.perfiles.forEach(function(p, pi) {
+      var d = vals[u.login + '-' + pi] || '';
+      lineas.push(u.nombre + ' | ' + u.login + ' | ' + p.app + ' | ' + p.perfil + ' | ' + d);
     });
   });
-  tablaHTML += '</tbody></table>';
-
-  // Datos estructurados ocultos para el script de consolidación
-  const datosOcultos = '<!--VALIDACION_DATA:' + btoa(unescape(encodeURIComponent(JSON.stringify(datos)))) + ':END_DATA-->';
-
-  const cuerpo = `mailto:${TU_CORREO}?subject=${encodeURIComponent('VALIDACION PERFILES | ' + JEFATURA + ' | ' + fecha)}&body=${encodeURIComponent('Adjunto el resultado de la validación de perfiles de mi equipo.
-
-Por favor no modificar el contenido de este correo.
-
----
-
-Este correo fue generado automáticamente.')}`;
-
-  // Abrir cliente de correo
-  window.location.href = cuerpo;
-
-  // Guardar datos en sessionStorage para el script
-  sessionStorage.setItem('validacion_pendiente', JSON.stringify({tablaHTML, datosOcultos, fecha}));
-
+  var cuerpo = 'Validacion de perfiles - ' + JEFATURA + ' - ' + fecha + '%0A%0A' + lineas.join('%0A');
+  var asunto = 'VALIDACION PERFILES | ' + JEFATURA;
+  window.location.href = 'mailto:' + TU_CORREO + '?subject=' + encodeURIComponent(asunto) + '&body=' + cuerpo;
   document.getElementById('main').style.display = 'none';
   document.getElementById('done').style.display  = 'block';
 }
