@@ -23,7 +23,7 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);min
 .btn-global-ok{border:1px solid #A8D5BC;background:var(--green-light);color:var(--green)}
 .btn-global-nok{border:1px solid #F0B4AE;background:var(--red-light);color:var(--red)}
 .app-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:1.25rem;overflow:hidden}
-.app-header{padding:10px 16px;background:#1A6B4A;color:#fff;font-size:13px;font-weight:600;letter-spacing:.3px}
+.app-header{padding:10px 16px;background:#1A6B4A;color:#fff;font-size:13px;font-weight:600}
 .user-section{border-bottom:1px solid var(--border)}
 .user-section:last-child{border-bottom:none}
 .user-label{padding:8px 16px;background:#FAFAF8;font-size:12px;font-weight:500;color:var(--muted);display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border)}
@@ -81,10 +81,11 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);min
   </div>
 </div>
 <script>
-var JEFATURA  = "LITZ ANDREA MAUREIRA VENEGONI";
-var CORREO    = "litz.maureira@afphabitat.cl";
-var TU_CORREO = "lmaureir@afphabitat.cl";
-var APPS      = [{"app": "ANGULAR (PGS)", "usuarios": [{"login": "vtorres", "nombre": "Vicente Torres", "perfiles": ["G_ROL_pgs_ordengiro_ejecutivo"]}]}, {"app": "DOCUWARE", "usuarios": [{"login": "vtorres", "nombre": "Vicente Torres", "perfiles": ["Formulario 57 Bis - Visualiza", "Habitat - Cotizaciones - Read (Archivador)", "PENSIONES - Liquidacion y Pensiones", "Planilla RecaudaciÃ³n Editar", "Reclamos Normativos - Reclamos Normativos Visualiza (Archivador)"]}]}, {"app": "PEOPLESOFT - ERP Finanzas", "usuarios": [{"login": "vtorres", "nombre": "Vicente Torres", "perfiles": ["HA_TR_CONS_OG_CHK", "HA_TR_OPEROGIR", "HA_TR_WF_CC_OG_COTIZREZ", "HA_TR_WF_OG", "HAB_AP_CFACT_APROBADOR", "HAB_GEN_HERRAMIENTAS_BASICAS", "HAB_GEN_USUARIO_BASICO", "HAB_PO_WF_APROBADOR"]}]}, {"app": "PEOPLESOFT - GESTOR", "usuarios": [{"login": "vtorres", "nombre": "Vicente Torres", "perfiles": ["CTASPERSONA_CONSULTA", "PeopleSoft Guest"]}]}, {"app": "PLATAFORMA OPERACIONAL - AD", "usuarios": [{"login": "vtorres", "nombre": "Vicente Torres", "perfiles": ["G_Habitat_do2_ROL_PlatOperacional_ProcesosCuentas", "G_Habitat_do2_ROL_PlatOperacional_Unitario"]}]}, {"app": "Portal Antiguo - Habiewb", "usuarios": [{"login": "vtorres", "nombre": "Vicente Torres", "perfiles": ["RT-Por OmisiÃ³n"]}]}, {"app": "RAD TRPENSION", "usuarios": [{"login": "vtorres", "nombre": "Vicente Torres", "perfiles": ["inicio", "NCG-264 Barrido T", "NCG-264 Traspaso T+1"]}]}, {"app": "SAP FINANZAS", "usuarios": [{"login": "vtorres", "nombre": "Vicente Torres", "perfiles": ["ZS:BASICO", "ZS:TR:APROBADOR_OG"]}]}, {"app": "V360", "usuarios": [{"login": "vtorres", "nombre": "Vicente Torres", "perfiles": ["G_Habitat_do2_ROL_ATENC_CLTE_NO_HAB", "G_Habitat_do2_ROL_ATENC_CLTE_Y_HAB"]}]}];
+// Datos codificados en base64 para evitar conflictos de caracteres
+var APPS      = JSON.parse(atob("W3siYXBwIjogIkFOR1VMQVIgKFBHUykiLCAidXN1YXJpb3MiOiBbeyJsb2dpbiI6ICJ2dG9ycmVzIiwgIm5vbWJyZSI6ICJWaWNlbnRlIFRvcnJlcyIsICJwZXJmaWxlcyI6IFsiR19ST0xfcGdzX29yZGVuZ2lyb19lamVjdXRpdm8iXX1dfSwgeyJhcHAiOiAiRE9DVVdBUkUiLCAidXN1YXJpb3MiOiBbeyJsb2dpbiI6ICJ2dG9ycmVzIiwgIm5vbWJyZSI6ICJWaWNlbnRlIFRvcnJlcyIsICJwZXJmaWxlcyI6IFsiRm9ybXVsYXJpbyA1NyBCaXMgLSBWaXN1YWxpemEiLCAiSGFiaXRhdCAtIENvdGl6YWNpb25lcyAtIFJlYWQgKEFyY2hpdmFkb3IpIiwgIlBFTlNJT05FUyAtIExpcXVpZGFjaW9uIHkgUGVuc2lvbmVzIiwgIlBsYW5pbGxhIFJlY2F1ZGFjacODwrNuIEVkaXRhciIsICJSZWNsYW1vcyBOb3JtYXRpdm9zIC0gUmVjbGFtb3MgTm9ybWF0aXZvcyBWaXN1YWxpemEgKEFyY2hpdmFkb3IpIl19XX0sIHsiYXBwIjogIlBFT1BMRVNPRlQgLSBFUlAgRmluYW56YXMiLCAidXN1YXJpb3MiOiBbeyJsb2dpbiI6ICJ2dG9ycmVzIiwgIm5vbWJyZSI6ICJWaWNlbnRlIFRvcnJlcyIsICJwZXJmaWxlcyI6IFsiSEFfVFJfQ09OU19PR19DSEsiLCAiSEFfVFJfT1BFUk9HSVIiLCAiSEFfVFJfV0ZfQ0NfT0dfQ09USVpSRVoiLCAiSEFfVFJfV0ZfT0ciLCAiSEFCX0FQX0NGQUNUX0FQUk9CQURPUiIsICJIQUJfR0VOX0hFUlJBTUlFTlRBU19CQVNJQ0FTIiwgIkhBQl9HRU5fVVNVQVJJT19CQVNJQ08iLCAiSEFCX1BPX1dGX0FQUk9CQURPUiJdfV19LCB7ImFwcCI6ICJQRU9QTEVTT0ZUIC0gR0VTVE9SIiwgInVzdWFyaW9zIjogW3sibG9naW4iOiAidnRvcnJlcyIsICJub21icmUiOiAiVmljZW50ZSBUb3JyZXMiLCAicGVyZmlsZXMiOiBbIkNUQVNQRVJTT05BX0NPTlNVTFRBIiwgIlBlb3BsZVNvZnQgR3Vlc3QiXX1dfSwgeyJhcHAiOiAiUExBVEFGT1JNQSBPUEVSQUNJT05BTCAtIEFEIiwgInVzdWFyaW9zIjogW3sibG9naW4iOiAidnRvcnJlcyIsICJub21icmUiOiAiVmljZW50ZSBUb3JyZXMiLCAicGVyZmlsZXMiOiBbIkdfSGFiaXRhdF9kbzJfUk9MX1BsYXRPcGVyYWNpb25hbF9Qcm9jZXNvc0N1ZW50YXMiLCAiR19IYWJpdGF0X2RvMl9ST0xfUGxhdE9wZXJhY2lvbmFsX1VuaXRhcmlvIl19XX0sIHsiYXBwIjogIlBvcnRhbCBBbnRpZ3VvIC0gSGFiaWV3YiIsICJ1c3VhcmlvcyI6IFt7ImxvZ2luIjogInZ0b3JyZXMiLCAibm9tYnJlIjogIlZpY2VudGUgVG9ycmVzIiwgInBlcmZpbGVzIjogWyJSVC1Qb3IgT21pc2nDg8KzbiJdfV19LCB7ImFwcCI6ICJSQUQgVFJQRU5TSU9OIiwgInVzdWFyaW9zIjogW3sibG9naW4iOiAidnRvcnJlcyIsICJub21icmUiOiAiVmljZW50ZSBUb3JyZXMiLCAicGVyZmlsZXMiOiBbImluaWNpbyIsICJOQ0ctMjY0IEJhcnJpZG8gVCIsICJOQ0ctMjY0IFRyYXNwYXNvIFQrMSJdfV19LCB7ImFwcCI6ICJTQVAgRklOQU5aQVMiLCAidXN1YXJpb3MiOiBbeyJsb2dpbiI6ICJ2dG9ycmVzIiwgIm5vbWJyZSI6ICJWaWNlbnRlIFRvcnJlcyIsICJwZXJmaWxlcyI6IFsiWlM6QkFTSUNPIiwgIlpTOlRSOkFQUk9CQURPUl9PRyJdfV19LCB7ImFwcCI6ICJWMzYwIiwgInVzdWFyaW9zIjogW3sibG9naW4iOiAidnRvcnJlcyIsICJub21icmUiOiAiVmljZW50ZSBUb3JyZXMiLCAicGVyZmlsZXMiOiBbIkdfSGFiaXRhdF9kbzJfUk9MX0FURU5DX0NMVEVfTk9fSEFCIiwgIkdfSGFiaXRhdF9kbzJfUk9MX0FURU5DX0NMVEVfWV9IQUIiXX1dfV0="));
+var JEFATURA  = atob("TElUWiBBTkRSRUEgTUFVUkVJUkEgVkVORUdPTkk=");
+var CORREO    = atob("bGl0ei5tYXVyZWlyYUBhZnBoYWJpdGF0LmNs");
+var TU_CORREO = atob("bG1hdXJlaXJAYWZwaGFiaXRhdC5jbA==");
 
 var vals     = {};
 var total    = 0;
@@ -115,7 +116,13 @@ window.addEventListener("load", function() {
 
       var userLabel = document.createElement("div");
       userLabel.className = "user-label";
-      userLabel.innerHTML = "<span>" + u.nombre + "</span><span class='login'>" + u.login + "</span>";
+      var nameSpan  = document.createElement("span");
+      nameSpan.textContent = u.nombre;
+      var loginSpan = document.createElement("span");
+      loginSpan.className = "login";
+      loginSpan.textContent = u.login;
+      userLabel.appendChild(nameSpan);
+      userLabel.appendChild(loginSpan);
       userSection.appendChild(userLabel);
 
       u.perfiles.forEach(function(p) {
