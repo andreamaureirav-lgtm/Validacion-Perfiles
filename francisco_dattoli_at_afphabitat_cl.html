@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Validacion de Perfiles</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#F5F4F0;--surface:#fff;--border:#E2E0DA;--text:#1A1916;--muted:#6B6860;--green:#1A6B4A;--green-light:#EAF4EF;--red:#C0392B;--red-light:#FDECEA;--radius:10px}
+body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.header{background:var(--surface);border-bottom:1px solid var(--border);padding:1rem 1.5rem;position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.header-left h2{font-size:15px;font-weight:600}
+.header-left p{font-size:12px;color:var(--muted);margin-top:2px}
+.progress-wrap{display:flex;align-items:center;gap:10px}
+.progress-bar{width:120px;height:6px;background:var(--border);border-radius:99px;overflow:hidden}
+.progress-fill{height:100%;background:var(--green);border-radius:99px;transition:width .3s;width:0%}
+.progress-label{font-size:12px;color:var(--muted);white-space:nowrap}
+.body{max-width:760px;margin:0 auto;padding:1.5rem}
+.instruccion{background:var(--green-light);border:1px solid #C3E2D4;border-radius:var(--radius);padding:12px 16px;font-size:13px;color:var(--green);margin-bottom:1rem;line-height:1.5}
+.global-btns{display:flex;gap:8px;margin-bottom:1.5rem}
+.btn-global{padding:8px 16px;border-radius:6px;font-size:13px;font-weight:500;cursor:pointer;font-family:"DM Sans",sans-serif}
+.btn-global-ok{border:1px solid #A8D5BC;background:var(--green-light);color:var(--green)}
+.btn-global-nok{border:1px solid #F0B4AE;background:var(--red-light);color:var(--red)}
+.app-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:1.25rem;overflow:hidden}
+.app-header{padding:10px 16px;background:#1A6B4A;color:#fff;font-size:13px;font-weight:600}
+.user-section{border-bottom:1px solid var(--border)}
+.user-section:last-child{border-bottom:none}
+.user-label{padding:8px 16px;background:#FAFAF8;font-size:12px;font-weight:500;color:var(--muted);display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border)}
+.user-label .login{font-family:"DM Mono",monospace;font-size:11px}
+.perfil-row{display:flex;align-items:center;justify-content:space-between;padding:8px 16px 8px 32px;border-bottom:1px solid var(--border);gap:12px}
+.perfil-row:last-child{border-bottom:none}
+.perfil-name{font-size:12px;font-family:"DM Mono",monospace;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.btns{display:flex;gap:6px;flex-shrink:0}
+.btn-val{padding:4px 12px;border-radius:6px;font-size:12px;font-weight:500;border:1px solid var(--border);background:transparent;cursor:pointer;color:var(--muted);font-family:"DM Sans",sans-serif}
+.btn-val.ok{background:var(--green-light);border-color:#A8D5BC;color:var(--green)}
+.btn-val.nok{background:var(--red-light);border-color:#F0B4AE;color:var(--red)}
+.footer{max-width:760px;margin:0 auto;padding:0 1.5rem 2rem;display:flex;justify-content:flex-end}
+.btn-submit{background:var(--green);color:#fff;border:none;border-radius:var(--radius);padding:12px 28px;font-size:14px;font-weight:500;cursor:pointer}
+.btn-submit:disabled{opacity:.4;cursor:not-allowed}
+.done{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem}
+.done-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:2.5rem;max-width:420px;width:100%;text-align:center}
+.done-icon{width:56px;height:56px;border-radius:50%;background:var(--green-light);color:var(--green);font-size:26px;display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem}
+.done-card h2{font-size:20px;font-weight:600;margin-bottom:8px}
+.done-card p{font-size:14px;color:var(--muted);line-height:1.6}
+</style>
+</head>
+<body>
+<div id="main">
+  <div class="header">
+    <div class="header-left">
+      <h2 id="jef-nombre"></h2>
+      <p id="jef-correo"></p>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      <span class="progress-label" id="progressLabel">0 / 0</span>
+    </div>
+  </div>
+  <div class="body">
+    <div class="instruccion">
+      Revisa cada perfil asignado a tu equipo, agrupado por aplicacion. Marca <strong>OK</strong> si es correcto o <strong>Remover</strong> si debe ser eliminado.
+    </div>
+    <div class="global-btns">
+      <button class="btn-global btn-global-ok" id="btnTodoOk">&#10003; Marcar todo OK</button>
+      <button class="btn-global btn-global-nok" id="btnTodoNok">&#10007; Marcar todo Remover</button>
+    </div>
+    <div id="container"></div>
+  </div>
+  <div class="footer">
+    <button class="btn-submit" id="btnEnviar" disabled>Enviar validacion</button>
+  </div>
+</div>
+<div id="done" style="display:none">
+  <div class="done">
+    <div class="done-card">
+      <div class="done-icon">&#10003;</div>
+      <h2>Validacion enviada!</h2>
+      <p>Gracias por revisar los perfiles de tu equipo. El equipo procesara tu respuesta a la brevedad.</p>
+    </div>
+  </div>
+</div>
+<script>
+// Datos codificados en base64 para evitar conflictos de caracteres
+var APPS      = JSON.parse(atob("W3siYXBwIjogIlYzNjAiLCAidXN1YXJpb3MiOiBbeyJsb2dpbiI6ICJkZ29uemFsciIsICJub21icmUiOiAiREFWSUQgTUFVUklDSU8gR09OWkFMRVogUkVZRVMiLCAicGVyZmlsZXMiOiBbIkdfSGFiaXRhdF9kbzJfUk9MX0FURU5DX0NMVEVfWV9IQUIiXX0sIHsibG9naW4iOiAicm1hcnRpbnAiLCAibm9tYnJlIjogIlJPQklOU09OIExPUkVOWk8gTUFSVElORVogVEFQSUEiLCAicGVyZmlsZXMiOiBbIkdfSGFiaXRhdF9kbzJfUk9MX0FURU5DX0NMVEVfTk9fSEFCIl19LCB7ImxvZ2luIjogInJwb25jZXIiLCAibm9tYnJlIjogIlJJQ0FSRE8gUk9EUklHTyBQT05DRSBSSVZFUkEiLCAicGVyZmlsZXMiOiBbIkdfSGFiaXRhdF9kbzJfUk9MX0FURU5DX0NMVEVfTk9fSEFCIl19LCB7ImxvZ2luIjogIm52aWxsYWciLCAibm9tYnJlIjogIk5JQ09MQVMgUEFUUklDSU8gVklMTEFHUkFOIFRBUElBIiwgInBlcmZpbGVzIjogWyJHX0hhYml0YXRfZG8yX1JPTF9BVEVOQ19DTFRFX05PX0hBQiJdfSwgeyJsb2dpbiI6ICJtcmFtaXJlcCIsICJub21icmUiOiAiTU9OSUNBIEJFQVRSSVogUkFNSVJFWiBQSVpBUlJPIiwgInBlcmZpbGVzIjogWyJHX0hhYml0YXRfZG8yX1JPTF9BVEVOQ19DTFRFX05PX0hBQiJdfSwgeyJsb2dpbiI6ICJtYWxhcmNvbSIsICJub21icmUiOiAiTUlHVUVMIElTQUFDIEFMQVJDT04gTU9MSU5BIiwgInBlcmZpbGVzIjogWyJHX0hhYml0YXRfZG8yX1JPTF9BVEVOQ19DTFRFX05PX0hBQiJdfSwgeyJsb2dpbiI6ICJsdG9yb21vIiwgIm5vbWJyZSI6ICJMSUxJQU5BIEFORFJFQSBUT1JPIE1PUkFMRVMiLCAicGVyZmlsZXMiOiBbIkdfSGFiaXRhdF9kbzJfUk9MX0FURU5DX0NMVEVfTk9fSEFCIl19LCB7ImxvZ2luIjogImRlc2NhbmRvIiwgIm5vbWJyZSI6ICJESUVHTyBBTlRIT05ZIEVTQ0FORE9SIEFMQVJDT04iLCAicGVyZmlsZXMiOiBbIkdfSGFiaXRhdF9kbzJfUk9MX0FURU5DX0NMVEVfTk9fSEFCIl19LCB7ImxvZ2luIjogImNzYW5jaGVlIiwgIm5vbWJyZSI6ICJDQVJPTElOQSBBVVJPUkEgU0FOQ0hFWiBFU1BJTk9aQSIsICJwZXJmaWxlcyI6IFsiR19IYWJpdGF0X2RvMl9ST0xfQVRFTkNfQ0xURV9OT19IQUIiXX0sIHsibG9naW4iOiAiYWNhcnRlc3AiLCAibm9tYnJlIjogIkFMRUpBTkRSQSBBTkRSRUEgQ0FSVEVTIFBFUkVaIiwgInBlcmZpbGVzIjogWyJHX0hhYml0YXRfZG8yX1JPTF9BVEVOQ19DTFRFX05PX0hBQiJdfSwgeyJsb2dpbiI6ICJjc2FsYXphciIsICJub21icmUiOiAiQ0VDSUxJQSBTQUxBWkFSIE1BREFSSUFHQSIsICJwZXJmaWxlcyI6IFsiR19IYWJpdGF0X2RvMl9ST0xfQVRFTkNfQ0xURV9OT19IQUIiXX0sIHsibG9naW4iOiAiZWZlcm5hbnIiLCAibm9tYnJlIjogIkVMQkEgQ0FST0xJTkEgRkVSTkFOREVaIFJPQ0hBIiwgInBlcmZpbGVzIjogWyJHX0hhYml0YXRfZG8yX1JPTF9BVEVOQ19DTFRFX05PX0hBQiJdfSwgeyJsb2dpbiI6ICJhc2VndXJhbSIsICJub21icmUiOiAiQUxFWEFOREVSIFNFR1VSQSBNT1JBTEVTIiwgInBlcmZpbGVzIjogWyJHX0hhYml0YXRfZG8yX1JPTF9BVEVOQ19DTFRFX05PX0hBQiJdfV19LCB7ImFwcCI6ICJTQVAgRklOQU5aQVMiLCAidXN1YXJpb3MiOiBbeyJsb2dpbiI6ICJDU0FOQ0hFRSIsICJub21icmUiOiAiQ0FST0xJTkEgQVVST1JBIFNBTkNIRVogRVNQSU5PWkEiLCAicGVyZmlsZXMiOiBbIlpTOlRSOkNBUkdBRE9SX09HIiwgIlpTOkJBU0lDTyJdfV19LCB7ImFwcCI6ICJSQUQgVFJQRU5TSU9OIiwgInVzdWFyaW9zIjogW3sibG9naW4iOiAiYXNlZ3VyYW0iLCAibm9tYnJlIjogIkFMRVhBTkRFUiBTRUdVUkEgTU9SQUxFUyIsICJwZXJmaWxlcyI6IFsiTkNHLTI2NCBUcmFtaXRlIC0gSGlzdG9yaWNvcyIsICJOQ0ctMjY0IENhcmdvIEFib25vIFQrMSIsICJOQ0ctMjY0IENhcmdvIEFib25vIFQiLCAiaW5pY2lvIl19LCB7ImxvZ2luIjogImVmZXJuYW5yIiwgIm5vbWJyZSI6ICJFTEJBIENBUk9MSU5BIEZFUk5BTkRFWiBST0NIQSIsICJwZXJmaWxlcyI6IFsiQ29uc3VsdGEiLCAiQnV6b24gVmVyaWZpY2FjaW9uIGRlIEFudGVjZWRlbnRlcyBbVkVSSUZBTlRFQ10iXX1dfSwgeyJhcHAiOiAiUG9ydGFsIEFudGlndW8gLSBIYWJpZXdiIiwgInVzdWFyaW9zIjogW3sibG9naW4iOiAiUk1BUlRJTlAiLCAibm9tYnJlIjogIlJPQklOU09OIExPUkVOWk8gTUFSVElORVogVEFQSUEiLCAicGVyZmlsZXMiOiBbIlJULVBvciBPbWlzacODwrNuIiwgIlJPTCBHT1BFLUdZUyBEZXNhZmlsL1RlYyBFeHQvQ2hpLVBlIiwgIlJPTCBHT1BFLUdZUyBEb2N1bWVudGFjaW9uIiwgIlJPTCBHT1BFLUdZUyBDb25zdWx0YXMgR2VzdGlvbiJdfSwgeyJsb2dpbiI6ICJSUE9OQ0VSIiwgIm5vbWJyZSI6ICJSSUNBUkRPIFJPRFJJR08gUE9OQ0UgUklWRVJBIiwgInBlcmZpbGVzIjogWyJSVC1Qb3IgT21pc2nDg8KzbiIsICJST0wgR09QRS1HWVMgRGVzYWZpbC9UZWMgRXh0L0NoaS1QZSIsICJST0wgR09QRS1HWVMgRG9jdW1lbnRhY2lvbiIsICJST0wgR09QRS1HWVMgQ29uc3VsdGFzIEdlc3Rpb24iXX0sIHsibG9naW4iOiAiTlZJTExBRyIsICJub21icmUiOiAiTklDT0xBUyBQQVRSSUNJTyBWSUxMQUdSQU4gVEFQSUEiLCAicGVyZmlsZXMiOiBbIlJULVBvciBPbWlzacODwrNuIiwgIlJPTCBHT1BFLUdZUyBDb25zdWx0YXMgR2VzdGlvbiJdfSwgeyJsb2dpbiI6ICJNUkFNSVJFUCIsICJub21icmUiOiAiTU9OSUNBIEJFQVRSSVogUkFNSVJFWiBQSVpBUlJPIiwgInBlcmZpbGVzIjogWyJSVC1Qb3IgT21pc2nDg8KzbiIsICJST0wgR09QRS1HWVMgQ29uc3VsdGFzIEdlc3Rpb24iXX0sIHsibG9naW4iOiAiTUFMQVJDT00iLCAibm9tYnJlIjogIk1JR1VFTCBJU0FBQyBBTEFSQ09OIE1PTElOQSIsICJwZXJmaWxlcyI6IFsiUlQtUG9yIE9taXNpw4PCs24iLCAiUk9MIEdPUEUtR1lTIENvbnN1bHRhcyBHZXN0aW9uIl19LCB7ImxvZ2luIjogIkxUT1JPTU8iLCAibm9tYnJlIjogIkxJTElBTkEgQU5EUkVBIFRPUk8gTU9SQUxFUyIsICJwZXJmaWxlcyI6IFsiUlQtUG9yIE9taXNpw4PCs24iLCAiUk9MIEdPUEUtR1lTIENvbnN1bHRhcyBHZXN0aW9uIl19LCB7ImxvZ2luIjogIkRFU0NBTkRPIiwgIm5vbWJyZSI6ICJESUVHTyBBTlRIT05ZIEVTQ0FORE9SIEFMQVJDT04iLCAicGVyZmlsZXMiOiBbIlJULVBvciBPbWlzacODwrNuIiwgIlJPTCBHT1BFLUdZUyBDb25zdWx0YXMgR2VzdGlvbiIsICJST0wgR09QRS1HWVMgRG9jdW1lbnRhY2lvbiJdfSwgeyJsb2dpbiI6ICJDU0FOQ0hFRSIsICJub21icmUiOiAiQ0FST0xJTkEgQVVST1JBIFNBTkNIRVogRVNQSU5PWkEiLCAicGVyZmlsZXMiOiBbIlJULVBvciBPbWlzacODwrNuIiwgIlJPTCBHT1BFLUdZUyBDb25zdWx0YXMgR2VzdGlvbiJdfSwgeyJsb2dpbiI6ICJER09OWkFMUiIsICJub21icmUiOiAiREFWSUQgTUFVUklDSU8gR09OWkFMRVogUkVZRVMiLCAicGVyZmlsZXMiOiBbIlJULVBvciBPbWlzacODwrNuIiwgIlJULUdDIC0gU1VDIEFnZW50ZSBQcmV2aXNpb25hbCJdfSwgeyJsb2dpbiI6ICJBQ0FSVEVTUCIsICJub21icmUiOiAiQUxFSkFORFJBIEFORFJFQSBDQVJURVMgUEVSRVoiLCAicGVyZmlsZXMiOiBbIlJULVBvciBPbWlzacODwrNuIiwgIlJPTCBHT1BFLUdZUyBEb2N1bWVudGFjaW9uIiwgIlJPTCBHT1BFLUdZUyBDb25zdWx0YXMgR2VzdGlvbiJdfSwgeyJsb2dpbiI6ICJDU0FMQVpBUiIsICJub21icmUiOiAiQ0VDSUxJQSBTQUxBWkFSIE1BREFSSUFHQSIsICJwZXJmaWxlcyI6IFsiUlQtUG9yIE9taXNpw4PCs24iLCAiUk9MIEdPUEUtR1lTIENvbnN1bHRhcyBHZXN0aW9uIl19LCB7ImxvZ2luIjogIkFTRUdVUkFNIiwgIm5vbWJyZSI6ICJBTEVYQU5ERVIgU0VHVVJBIE1PUkFMRVMiLCAicGVyZmlsZXMiOiBbIlJULVBvciBPbWlzacODwrNuIiwgIlJPTCBHT1BFLUdZUyBDb25zdWx0YXMgR2VzdGlvbiJdfSwgeyJsb2dpbiI6ICJFRkVSTkFOUiIsICJub21icmUiOiAiRUxCQSBDQVJPTElOQSBGRVJOQU5ERVogUk9DSEEiLCAicGVyZmlsZXMiOiBbIlJULVBvciBPbWlzacODwrNuIiwgIlJPTCBHT1BFLUdZUyBDb25zdWx0YXMgR2VzdGlvbiJdfV19XQ=="));
+var JEFATURA  = atob("RlJBTkNJU0NPIEpBVklFUiBEQVRUT0xJIEJBSUVS");
+var CORREO    = atob("ZnJhbmNpc2NvLmRhdHRvbGlAYWZwaGFiaXRhdC5jbA==");
+var TU_CORREO = atob("bG1hdXJlaXJAYWZwaGFiaXRhdC5jbA==");
+
+var vals     = {};
+var total    = 0;
+var rowCount = 0;
+
+document.getElementById("jef-nombre").textContent = JEFATURA;
+document.getElementById("jef-correo").textContent = CORREO;
+
+document.getElementById("btnTodoOk").addEventListener("click",  function() { marcarTodo("OK"); });
+document.getElementById("btnTodoNok").addEventListener("click",  function() { marcarTodo("Remover"); });
+document.getElementById("btnEnviar").addEventListener("click",   enviar);
+
+window.addEventListener("load", function() {
+  var c = document.getElementById("container");
+
+  APPS.forEach(function(a) {
+    var appCard = document.createElement("div");
+    appCard.className = "app-card";
+
+    var appHeader = document.createElement("div");
+    appHeader.className = "app-header";
+    appHeader.textContent = a.app;
+    appCard.appendChild(appHeader);
+
+    a.usuarios.forEach(function(u) {
+      var userSection = document.createElement("div");
+      userSection.className = "user-section";
+
+      var userLabel = document.createElement("div");
+      userLabel.className = "user-label";
+      var nameSpan  = document.createElement("span");
+      nameSpan.textContent = u.nombre;
+      var loginSpan = document.createElement("span");
+      loginSpan.className = "login";
+      loginSpan.textContent = u.login;
+      userLabel.appendChild(nameSpan);
+      userLabel.appendChild(loginSpan);
+      userSection.appendChild(userLabel);
+
+      u.perfiles.forEach(function(p) {
+        var i = rowCount++;
+        total++;
+
+        var row = document.createElement("div");
+        row.className = "perfil-row";
+        row.id = "row-" + i;
+
+        var pName = document.createElement("div");
+        pName.className = "perfil-name";
+        pName.title = p;
+        pName.textContent = p;
+
+        var btns = document.createElement("div");
+        btns.className = "btns";
+
+        var btnOk = document.createElement("button");
+        btnOk.className = "btn-val";
+        btnOk.id = "ok-" + i;
+        btnOk.innerHTML = "&#10003; OK";
+        btnOk.addEventListener("click", (function(idx) { return function() { toggle(idx, "OK"); }; })(i));
+
+        var btnNok = document.createElement("button");
+        btnNok.className = "btn-val";
+        btnNok.id = "nok-" + i;
+        btnNok.innerHTML = "&#10007; Remover";
+        btnNok.addEventListener("click", (function(idx) { return function() { toggle(idx, "Remover"); }; })(i));
+
+        btns.appendChild(btnOk);
+        btns.appendChild(btnNok);
+        row.appendChild(pName);
+        row.appendChild(btns);
+        userSection.appendChild(row);
+      });
+
+      appCard.appendChild(userSection);
+    });
+
+    c.appendChild(appCard);
+  });
+
+  actualizar();
+});
+
+function toggle(idx, val) {
+  var okBtn  = document.getElementById("ok-"  + idx);
+  var nokBtn = document.getElementById("nok-" + idx);
+  if (vals[idx] === val) {
+    delete vals[idx];
+    okBtn.className  = "btn-val";
+    nokBtn.className = "btn-val";
+  } else {
+    vals[idx] = val;
+    okBtn.className  = val === "OK"      ? "btn-val ok"  : "btn-val";
+    nokBtn.className = val === "Remover" ? "btn-val nok" : "btn-val";
+  }
+  actualizar();
+}
+
+function marcarTodo(val) {
+  for (var i = 0; i < rowCount; i++) {
+    vals[i] = val;
+    var okBtn  = document.getElementById("ok-"  + i);
+    var nokBtn = document.getElementById("nok-" + i);
+    if (okBtn)  okBtn.className  = val === "OK"      ? "btn-val ok"  : "btn-val";
+    if (nokBtn) nokBtn.className = val === "Remover" ? "btn-val nok" : "btn-val";
+  }
+  actualizar();
+}
+
+function actualizar() {
+  var done = Object.keys(vals).length;
+  var pct  = total > 0 ? Math.round(done / total * 100) : 0;
+  document.getElementById("progressFill").style.width = pct + "%";
+  document.getElementById("progressLabel").textContent = done + " / " + total;
+  document.getElementById("btnEnviar").disabled = done < total;
+}
+
+function enviar() {
+  var fecha = new Date().toLocaleString("es-CL");
+  var lineas = [];
+  var idx = 0;
+  APPS.forEach(function(a) {
+    a.usuarios.forEach(function(u) {
+      u.perfiles.forEach(function(p) {
+        lineas.push(a.app + " | " + u.nombre + " | " + u.login + " | " + p + " | " + (vals[idx] || ""));
+        idx++;
+      });
+    });
+  });
+  var asunto = encodeURIComponent("VALIDACION PERFILES | " + JEFATURA);
+  var cuerpo = encodeURIComponent("Validacion - " + JEFATURA + " - " + fecha + "\n\nAplicacion | Nombre | Login | Perfil | Decision\n" + lineas.join("\n"));
+  window.location.href = "mailto:" + TU_CORREO + "?subject=" + asunto + "&body=" + cuerpo;
+  document.getElementById("main").style.display = "none";
+  document.getElementById("done").style.display  = "block";
+}
+</script>
+</body>
+</html>
